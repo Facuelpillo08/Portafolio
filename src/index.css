@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: #ededed;
+  color: #171717;
+}
+
+/* Clases de utilidad para perspectiva 3D */
+.perspective-container {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Tipografía Todo Rojo Vibrante y Escultórico */
+.text-metallic-red-back {
+  font-family: var(--font-display);
+  background: linear-gradient(
+    180deg,
+    #ff2247 0%,
+    #ef1442 32%,
+    #dc2626 62%,
+    #991b1b 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.45)) drop-shadow(0 20px 42px rgba(0, 0, 0, 0.35));
+  letter-spacing: -0.025em;
+}
+
+.text-metallic-red-front {
+  font-family: var(--font-display);
+  background: linear-gradient(
+    180deg,
+    #ff3355 0%,
+    #f43f5e 30%,
+    #e11d48 65%,
+    #b91c1c 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 14px 28px rgba(225, 29, 72, 0.6));
+}
+
+
+
+
+
+
+/* Marquee / Cinta infinita editorial */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-reverse 55s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover,
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+
+
+
