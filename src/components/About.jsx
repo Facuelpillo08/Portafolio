@@ -1,17 +1,43 @@
 import { ArrowUpRight, Sparkles, Terminal, Activity, Layers } from 'lucide-react';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function About() {
+  const sectionRef = useScrollReveal([
+    {
+      trigger: '.about-header',
+      selector: '.about-header > *',
+      duration: 1.0,
+      stagger: 0.14,
+      y: 40,
+      blur: 8
+    },
+    {
+      trigger: '.about-text-col',
+      selector: '.about-text-col > *',
+      duration: 1.0,
+      stagger: 0.16,
+      y: 35,
+      blur: 6
+    },
+    {
+      trigger: '.about-card',
+      selector: '.about-card',
+      duration: 1.1,
+      y: 45,
+      blur: 8
+    }
+  ]);
+
   return (
     <section
       id="sobre-mi"
+      ref={sectionRef}
       aria-labelledby="about-title"
       className="relative bg-[#0c0c10] text-stone-100 pt-24 pb-28 overflow-hidden border-t border-white/5"
     >
-
-
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* ENCABEZADO EDITORIAL DE SECCIÓN */}
-        <header className="mb-14">
+        <header className="about-header mb-14">
           <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest">
             <span className="w-8 h-px bg-red-500 inline-block" />
             <span>[ 01 // MANIFIESTO ]</span>
@@ -32,7 +58,7 @@ export default function About() {
         {/* CONTENIDO EDITORIAL A DOS COLUMNAS */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Columna Izquierda: Narrativa y Métricas (7 cols) */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="about-text-col lg:col-span-7 space-y-8">
             <p className="text-stone-300 text-lg sm:text-xl font-normal leading-relaxed">
               Desarrollador web enfocado en la convergencia entre ingeniería de software de alto nivel y diseño interactivo de vanguardia. Concibo cada proyecto no como una página estática convencional, sino como un producto digital interactivo, rápido y con identidad propia.
             </p>
@@ -46,7 +72,7 @@ export default function About() {
           <div className="lg:col-span-5">
             <aside
               aria-label="Estado operativo y detalles de desarrollo"
-              className="rounded-2xl bg-stone-900/80 border border-white/10 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group hover:border-red-500/40 transition-all duration-300"
+              className="about-card rounded-2xl bg-stone-900/80 border border-white/10 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group hover:border-red-500/40 transition-all duration-300"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 rounded-full blur-2xl pointer-events-none" />
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import studioBg from '../assets/studio_background.jpg';
 import silhouetteImg from '../assets/silhouette.png';
 import { ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -10,7 +11,53 @@ export default function Hero() {
   // Coordenadas objetivo (inmediatas) y actuales (interpoladas con inercia elástica)
   const targetMouse = useRef({ x: 0, y: 0 });
   const currentMouse = useRef({ x: 0, y: 0 });
+  const isTouching = useRef(false);
   const [springPos, setSpringPos] = useState({ x: 0, y: 0 });
+
+  // REVELACIÓN EDITORIAL INICIAL AL MONTAR EL HERO
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from('.hero-corner', {
+        opacity: 0,
+        y: -15,
+        filter: 'blur(6px)',
+        duration: 0.9,
+        stagger: 0.1,
+        ease: 'power3.out',
+        delay: 0.1
+      });
+
+      gsap.from('.hero-back-title', {
+        opacity: 0,
+        filter: 'blur(14px)',
+        duration: 1.3,
+        ease: 'power3.out',
+        delay: 0.2
+      });
+
+      gsap.from('.hero-silhouette', {
+        opacity: 0,
+        scale: 0.95,
+        filter: 'blur(10px)',
+        duration: 1.4,
+        ease: 'power3.out',
+        delay: 0.35
+      });
+
+      gsap.from('.hero-front-title', {
+        opacity: 0,
+        filter: 'blur(10px)',
+        duration: 1.1,
+        ease: 'power3.out',
+        delay: 0.5
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   // Escuchar scroll para animar el parallax en Z de las capas de texto
   useEffect(() => {
@@ -35,6 +82,16 @@ export default function Hero() {
     let animId;
 
     const updatePhysics = () => {
+      const isMobile = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+
+      // En móviles sin interacción táctil activa: oscilación pendular natural (~4s por ciclo)
+      if (isMobile && !isTouching.current) {
+        const time = performance.now() * 0.001;
+        const angle = time * (Math.PI / 2); // Periodo de 4 segundos
+        targetMouse.current.x = Math.sin(angle) * 0.6;
+        targetMouse.current.y = Math.cos(angle) * 0.2;
+      }
+
       // Interpolación lineal suave: factor 0.055 da una inercia pesada y elegante
       currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.055;
       currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.055;
@@ -64,6 +121,31 @@ export default function Hero() {
     targetMouse.current = { x: 0, y: 0 };
   };
 
+  const handleTouchStart = (e) => {
+    isTouching.current = true;
+    if (!containerRef.current || !e.touches[0]) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const touch = e.touches[0];
+    targetMouse.current = {
+      x: ((touch.clientX - rect.left) / rect.width - 0.5) * 2,
+      y: ((touch.clientY - rect.top) / rect.height - 0.5) * 2
+    };
+  };
+
+  const handleTouchMove = (e) => {
+    if (!containerRef.current || !e.touches[0]) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const touch = e.touches[0];
+    targetMouse.current = {
+      x: ((touch.clientX - rect.left) / rect.width - 0.5) * 2,
+      y: ((touch.clientY - rect.top) / rect.height - 0.5) * 2
+    };
+  };
+
+  const handleTouchEnd = () => {
+    isTouching.current = false;
+  };
+
   // Progreso de scroll normalizado (0 a 1)
   const scrollProgress = Math.min(scrollY / 650, 1.3);
 
@@ -79,6 +161,10 @@ export default function Hero() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
       className="relative w-full h-screen min-h-screen flex items-center justify-center overflow-hidden bg-[#e8e8ea] select-none perspective-container"
       aria-label="Portada del portafolio de Facundo Acosta"
     >
@@ -109,7 +195,7 @@ export default function Hero() {
 
       {/* 3. ENLACES EDITORIALES EN LAS ESQUINAS DEL HERO */}
       {/* Esquina Superior Izquierda: Identidad */}
-      <div className="absolute top-8 left-8 md:top-10 md:left-12 z-40">
+      <div className="hero-corner absolute top-8 left-8 md:top-10 md:left-12 z-40">
         <a
           href="#inicio"
           className="group flex flex-col font-mono text-xs uppercase tracking-widest transition-colors"
@@ -122,7 +208,7 @@ export default function Hero() {
       </div>
 
       {/* Esquina Superior Derecha: INFO */}
-      <div className="absolute top-8 right-8 md:top-10 md:right-12 z-40">
+      <div className="hero-corner absolute top-8 right-8 md:top-10 md:right-12 z-40">
         <a
           href="#sobre-mi"
           className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-800 hover:text-red-600 transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-black/5"
@@ -134,7 +220,7 @@ export default function Hero() {
       </div>
 
       {/* Esquina Inferior Izquierda: PROYECTOS */}
-      <div className="absolute bottom-8 left-8 md:bottom-10 md:left-12 z-40">
+      <div className="hero-corner absolute bottom-8 left-8 md:bottom-10 md:left-12 z-40">
         <a
           href="#proyectos"
           className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-200 hover:text-red-400 transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-white/10"
@@ -146,7 +232,7 @@ export default function Hero() {
       </div>
 
       {/* Esquina Inferior Derecha: CONTACTO */}
-      <div className="absolute bottom-8 right-8 md:bottom-10 md:right-12 z-40">
+      <div className="hero-corner absolute bottom-8 right-8 md:bottom-10 md:right-12 z-40">
         <a
           href="#contacto"
           className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-200 hover:text-red-400 transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-white/10"
@@ -159,7 +245,7 @@ export default function Hero() {
 
       {/* 4. CAPA TRASERA: "FACUNDO ACOSTA" (Z-10) - Profundidad Cinemática Desacoplada (Depth Parallax) */}
       <div
-        className="absolute top-[20%] md:top-[16%] left-0 right-0 z-10 flex justify-center items-center pointer-events-none preserve-3d"
+        className="hero-back-title absolute top-[20%] md:top-[16%] left-0 right-0 z-10 flex justify-center items-center pointer-events-none preserve-3d"
         style={{
           transform: `translate3d(${shiftX * 0.85}px, ${shiftY * 0.85 - scrollProgress * 100}px, ${-90 - scrollProgress * 150}px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
           willChange: 'transform'
@@ -178,13 +264,13 @@ export default function Hero() {
         <img
           src={silhouetteImg}
           alt="Facundo Acosta - Desarrollador Web"
-          className="h-[78vh] sm:h-[82vh] md:h-[88vh] lg:h-[92vh] max-h-[960px] w-auto object-contain object-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.5)] select-none"
+          className="hero-silhouette h-[88vh] sm:h-[82vh] md:h-[88vh] lg:h-[92vh] max-h-[960px] w-auto object-contain object-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.5)] select-none"
         />
       </div>
 
       {/* 6. CAPA FRONTAL: "DESARROLLADOR WEB" (Z-30) - Capa Frontal Desacoplada en Contrafase */}
       <div
-        className="absolute bottom-[28%] md:bottom-[23%] left-0 right-0 z-30 flex justify-center items-center pointer-events-none preserve-3d"
+        className="hero-front-title absolute bottom-[28%] md:bottom-[23%] left-0 right-0 z-30 flex justify-center items-center pointer-events-none preserve-3d"
         style={{
           transform: `translate3d(${-shiftX * 0.45}px, ${-shiftY * 0.45 + scrollProgress * 55}px, ${65 + scrollProgress * 50}px) rotateX(${tiltX * 0.5}deg) rotateY(${tiltY * 0.5}deg)`,
           willChange: 'transform'

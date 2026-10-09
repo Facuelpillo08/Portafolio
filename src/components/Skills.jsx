@@ -1,8 +1,53 @@
 import { useState } from 'react';
 import { Code2, HeartHandshake, CheckCircle2, Sparkles } from 'lucide-react';
+import gsap from 'gsap';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function Skills() {
   const [activeTab, setActiveTab] = useState('hard');
+
+  const sectionRef = useScrollReveal([
+    {
+      trigger: '.skills-header',
+      selector: '.skills-header > *',
+      duration: 1.0,
+      stagger: 0.14,
+      y: 40,
+      blur: 8
+    },
+    {
+      trigger: '.skills-tabs',
+      selector: '.skills-tabs',
+      duration: 0.9,
+      y: 30,
+      blur: 6
+    },
+    {
+      trigger: '.skills-list',
+      selector: '.skill-item',
+      duration: 0.85,
+      stagger: 0.1,
+      y: 35,
+      blur: 6
+    },
+    {
+      trigger: '.skills-footer',
+      selector: '.skills-footer',
+      duration: 0.8,
+      y: 25,
+      blur: 6
+    }
+  ]);
+
+  const handleTabChange = (tab) => {
+    if (tab === activeTab) return;
+    setActiveTab(tab);
+    gsap.fromTo(
+      '.skill-item',
+      { opacity: 0, y: 15, filter: 'blur(4px)' },
+      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.05, ease: 'power2.out' }
+    );
+  };
 
   const hardSkills = [
     {
@@ -99,12 +144,13 @@ export default function Skills() {
   return (
     <section
       id="habilidades"
+      ref={sectionRef}
       aria-labelledby="skills-title"
       className="relative bg-[#0c0c10] text-stone-100 py-32 px-6 md:px-12 border-t border-white/10 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ENCABEZADO EDITORIAL */}
-        <header className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-white/10">
+        <header className="skills-header mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-white/10">
           <div>
             <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest mb-3">
               <span className="w-8 h-px bg-red-500 inline-block" />
@@ -124,10 +170,10 @@ export default function Skills() {
         </header>
 
         {/* SELECTOR DE PESTAÑAS EDITORIAL (TABS DE ALTA GAMA) */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 md:gap-4 mb-16 border-b border-white/10 pb-6">
+        <div className="skills-tabs flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 md:gap-4 mb-16 border-b border-white/10 pb-6">
           <button
             type="button"
-            onClick={() => setActiveTab('hard')}
+            onClick={() => handleTabChange('hard')}
             className={`group relative flex items-center gap-3 px-6 py-3.5 rounded-full font-mono text-xs md:text-sm tracking-wider uppercase transition-all duration-300 cursor-pointer ${
               activeTab === 'hard'
                 ? 'bg-white text-black font-bold shadow-[0_4px_20px_rgba(255,255,255,0.15)]'
@@ -143,7 +189,7 @@ export default function Skills() {
 
           <button
             type="button"
-            onClick={() => setActiveTab('soft')}
+            onClick={() => handleTabChange('soft')}
             className={`group relative flex items-center gap-3 px-6 py-3.5 rounded-full font-mono text-xs md:text-sm tracking-wider uppercase transition-all duration-300 cursor-pointer ${
               activeTab === 'soft'
                 ? 'bg-white text-black font-bold shadow-[0_4px_20px_rgba(255,255,255,0.15)]'
@@ -159,11 +205,11 @@ export default function Skills() {
         </div>
 
         {/* LISTADO EDITORIAL ABIERTO CON HOVER REVEAL (SIN SIMPLES CARDS) */}
-        <div className="divide-y divide-white/10 border-b border-white/10">
+        <div className="skills-list divide-y divide-white/10 border-b border-white/10">
           {currentList.map((item) => (
             <div
               key={item.index + item.title}
-              className="group relative py-7 md:py-9 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-xl transition-all duration-300 hover:bg-white/[0.025]"
+              className="skill-item group relative py-7 md:py-9 px-4 sm:px-6 -mx-4 sm:-mx-6 rounded-xl transition-all duration-300 hover:bg-white/[0.025]"
             >
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
                 {/* Lado izquierdo: Índice + Título de gran escala con micro-desplazamiento */}
@@ -208,7 +254,7 @@ export default function Skills() {
         </div>
 
         {/* PIE DE SECCIÓN: MANIFIESTO DE RIGOR Y DISPONIBILIDAD */}
-        <footer className="mt-16 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs">
+        <footer className="skills-footer mt-16 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs">
           <div className="flex items-center gap-3 text-stone-300">
             <CheckCircle2 className="w-5 h-5 text-red-500 flex-shrink-0" />
             <span>DISPONIBILIDAD INMEDIATA // CÓDIGO LIMPIO, COMPROBADO Y ESCALABLE A PRODUCCIÓN.</span>

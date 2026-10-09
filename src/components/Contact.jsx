@@ -2,10 +2,37 @@ import { useState, useEffect } from 'react';
 import { ArrowUpRight, Copy, Check, Clock, Mail, Sparkles } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './Icons';
 import { socials } from '../data/socials';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
   const [timeString, setTimeString] = useState('');
+
+  const sectionRef = useScrollReveal([
+    {
+      trigger: '.contact-header',
+      selector: '.contact-header > *',
+      duration: 1.0,
+      stagger: 0.14,
+      y: 40,
+      blur: 8
+    },
+    {
+      trigger: '.contact-main-card',
+      selector: '.contact-main-card',
+      duration: 1.0,
+      y: 45,
+      blur: 8
+    },
+    {
+      trigger: '.contact-subcards',
+      selector: '.contact-subcards > *',
+      duration: 0.9,
+      stagger: 0.14,
+      y: 35,
+      blur: 6
+    }
+  ]);
 
   const emailData = socials.find((s) => s.name.toLowerCase() === 'email') || {
     url: 'mailto:facundo.acosta@ejemplo.com',
@@ -40,6 +67,7 @@ export default function Contact() {
   return (
     <section
       id="contacto"
+      ref={sectionRef}
       aria-labelledby="contact-title"
       className="relative bg-[#0c0c10] text-stone-100 pt-28 pb-32 px-6 md:px-12 border-t border-white/10 overflow-hidden"
     >
@@ -48,7 +76,7 @@ export default function Contact() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ENCABEZADO EDITORIAL */}
-        <header className="mb-16">
+        <header className="contact-header mb-16">
           <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest mb-4">
             <span className="w-8 h-px bg-red-500 inline-block" />
             <span>[ 04 // CONTACTO ]</span>
@@ -70,7 +98,7 @@ export default function Contact() {
         </header>
 
         {/* BLOQUE PRINCIPAL: EMAIL DE GRAN FORMATO INTERACTIVO */}
-        <div className="my-14 p-8 sm:p-12 rounded-3xl bg-white/[0.02] border border-white/10 hover:border-red-500/40 backdrop-blur-xl transition-all duration-300">
+        <div className="contact-main-card my-14 p-8 sm:p-12 rounded-3xl bg-white/[0.02] border border-white/10 hover:border-red-500/40 backdrop-blur-xl transition-all duration-300">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-stone-500 block mb-2">
@@ -112,7 +140,7 @@ export default function Contact() {
         </div>
 
         {/* ENLACES A REDES Y TELEMETRÍA EN VIVO */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch pt-4">
+        <div className="contact-subcards grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch pt-4">
           {/* Canales Sociales Editorial (7 cols) */}
           <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <a

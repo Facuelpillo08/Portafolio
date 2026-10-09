@@ -1,12 +1,38 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { projects } from '../data/projects';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
 import { GithubIcon } from './Icons';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function FeaturedProjects() {
   const [activeProject, setActiveProject] = useState(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const containerRef = useRef(null);
+
+  const containerRef = useScrollReveal([
+    {
+      trigger: '.projects-header',
+      selector: '.projects-header > *',
+      duration: 1.0,
+      stagger: 0.14,
+      y: 40,
+      blur: 8
+    },
+    {
+      trigger: '.projects-list',
+      selector: '.project-row',
+      duration: 0.9,
+      stagger: 0.12,
+      y: 35,
+      blur: 6
+    },
+    {
+      trigger: '.projects-footer',
+      selector: '.projects-footer',
+      duration: 0.85,
+      y: 25,
+      blur: 6
+    }
+  ]);
 
   const handleMouseMove = (e) => {
     if (!containerRef.current) return;
@@ -31,7 +57,7 @@ export default function FeaturedProjects() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ENCABEZADO EDITORIAL */}
-        <header className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
+        <header className="projects-header mb-20 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
           <div>
             <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest mb-3">
               <span className="w-8 h-px bg-red-500 inline-block" />
@@ -53,18 +79,16 @@ export default function FeaturedProjects() {
         {/* LISTA EDITORIAL INTERACTIVA */}
         <div
           role="list"
-          className="divide-y divide-white/10 border-b border-white/10"
+          className="projects-list divide-y divide-white/10 border-b border-white/10"
           onMouseLeave={() => setActiveProject(null)}
         >
-          {projects.map((project, index) => {
-            const isHovered = activeProject?.id === project.id;
-
+          {projects.map((project) => {
             return (
               <article
                 key={project.id}
                 role="listitem"
                 onMouseEnter={() => setActiveProject(project)}
-                className="group relative py-10 md:py-14 transition-all duration-300"
+                className="project-row group relative py-10 md:py-14 transition-all duration-300"
               >
                 {/* FILA PRINCIPAL */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 cursor-pointer">
@@ -148,7 +172,7 @@ export default function FeaturedProjects() {
         </div>
 
         {/* FOOTER DE SECCIÓN / GITHUB EXPLORER */}
-        <div className="mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-stone-400">
+        <div className="projects-footer mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-stone-400">
           <span className="tracking-widest uppercase">
             [ MÁS PROYECTOS Y EXPERIMENTOS DISPONIBLES EN GITHUB ]
           </span>
