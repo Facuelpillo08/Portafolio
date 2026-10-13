@@ -12,37 +12,52 @@ export default function Contact() {
     {
       trigger: '.contact-header',
       selector: '.contact-header > *',
-      duration: 1.0,
-      stagger: 0.14,
-      y: 40,
-      blur: 8
+      duration: 0.85,
+      stagger: 0.1,
+      y: 35
     },
     {
       trigger: '.contact-main-card',
       selector: '.contact-main-card',
-      duration: 1.0,
-      y: 45,
-      blur: 8
+      duration: 0.85,
+      y: 35,
+      scale: 0.98
     },
     {
       trigger: '.contact-subcards',
       selector: '.contact-subcards > *',
-      duration: 0.9,
-      stagger: 0.14,
-      y: 35,
-      blur: 6
+      duration: 0.8,
+      stagger: 0.1,
+      y: 25
     }
   ]);
 
   const emailData = socials.find((s) => s.name.toLowerCase() === 'email') || {
-    url: 'mailto:facundo.acosta@ejemplo.com',
-    display: 'facundo.acosta@ejemplo.com'
+    url: 'mailto:acostafacu30@gmail.com',
+    display: 'acostafacu30@gmail.com'
   };
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(emailData.display);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2400);
+  const handleCopyEmail = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(emailData.display);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = emailData.display;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2400);
+    } catch {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2400);
+    }
   };
 
   // Reloj en tiempo real para Buenos Aires (UTC-3)
@@ -144,7 +159,7 @@ export default function Contact() {
           {/* Canales Sociales Editorial (7 cols) */}
           <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <a
-              href="https://linkedin.com/in/facundoacosta"
+              href="https://www.linkedin.com/in/facu-acosta-51b0b7364/"
               target="_blank"
               rel="noopener noreferrer"
               className="group p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-red-500/40 flex items-center justify-between transition-all duration-200"
@@ -164,7 +179,7 @@ export default function Contact() {
             </a>
 
             <a
-              href="https://github.com/facundoacosta"
+              href="https://github.com/Facuelpillo08"
               target="_blank"
               rel="noopener noreferrer"
               className="group p-6 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-red-500/40 flex items-center justify-between transition-all duration-200"

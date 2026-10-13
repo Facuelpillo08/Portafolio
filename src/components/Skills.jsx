@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Code2, HeartHandshake, CheckCircle2, Sparkles } from 'lucide-react';
+import { Code2, HeartHandshake, CheckCircle2 } from 'lucide-react';
 import gsap from 'gsap';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
@@ -10,43 +10,41 @@ export default function Skills() {
     {
       trigger: '.skills-header',
       selector: '.skills-header > *',
-      duration: 1.0,
-      stagger: 0.14,
-      y: 40,
-      blur: 8
+      duration: 0.85,
+      stagger: 0.12,
+      y: 35
     },
     {
       trigger: '.skills-tabs',
       selector: '.skills-tabs',
-      duration: 0.9,
-      y: 30,
-      blur: 6
+      duration: 0.8,
+      y: 25
     },
     {
-      trigger: '.skills-list',
       selector: '.skill-item',
-      duration: 0.85,
-      stagger: 0.1,
-      y: 35,
-      blur: 6
+      individual: true,
+      duration: 0.75,
+      y: 25,
+      scale: 0.98
     },
     {
       trigger: '.skills-footer',
       selector: '.skills-footer',
       duration: 0.8,
-      y: 25,
-      blur: 6
+      y: 20
     }
   ]);
 
   const handleTabChange = (tab) => {
     if (tab === activeTab) return;
     setActiveTab(tab);
-    gsap.fromTo(
-      '.skill-item',
-      { opacity: 0, y: 15, filter: 'blur(4px)' },
-      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.05, ease: 'power2.out' }
-    );
+    requestAnimationFrame(() => {
+      gsap.fromTo(
+        '.skill-item',
+        { opacity: 0, y: 15, scale: 0.98 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.35, stagger: 0.04, ease: 'power2.out', clearProps: 'all' }
+      );
+    });
   };
 
   const hardSkills = [
@@ -91,6 +89,20 @@ export default function Skills() {
       tag: 'WORKFLOW & CI/CD',
       description: 'Control de versiones con conventional commits, branch management, code reviews rigurosas y despliegues automatizados en Vercel/Netlify.',
       tools: ['Git', 'GitHub', 'CI/CD Pipelines', 'Vercel']
+    },
+    {
+      index: '/07',
+      title: 'Servidores & Backend (Node.js & Express)',
+      tag: 'SERVERS & BACKEND',
+      description: 'Creación y configuración de servidores web, arquitectura de APIs RESTful, controladores, middlewares, autenticación segura y comunicación cliente-servidor.',
+      tools: ['Node.js', 'Express', 'APIs RESTful', 'HTTP / CORS']
+    },
+    {
+      index: '/08',
+      title: 'Bases de Datos Relacionales & NoSQL',
+      tag: 'DATABASE & DATA',
+      description: 'Modelado y diseño de esquemas, consultas optimizadas, persistencia de datos relacional y no relacional, e integración con ORMs y servicios en la nube.',
+      tools: ['PostgreSQL', 'MySQL', 'MongoDB', 'Supabase / ORM']
     }
   ];
 
@@ -165,7 +177,7 @@ export default function Skills() {
           </div>
 
           <p className="text-stone-400 font-mono text-xs md:text-sm max-w-md uppercase tracking-wider leading-relaxed">
-            COMBINACIÓN DE RIGOR TÉCNICO EN CÓDIGO FRONTEND Y METODOLOGÍA HUMANA ORIENTADA AL IMPACTO DE PRODUCTO.
+            COMBINACIÓN DE RIGOR TÉCNICO EN FRONTEND, BACKEND, BASES DE DATOS Y METODOLOGÍA HUMANA ORIENTADA AL IMPACTO.
           </p>
         </header>
 
@@ -183,7 +195,7 @@ export default function Skills() {
             <Code2 className={`w-4 h-4 ${activeTab === 'hard' ? 'text-red-600' : 'text-stone-500 group-hover:text-white'}`} />
             <span>[ 01 // HABILIDADES DURAS · HARD SKILLS ]</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${activeTab === 'hard' ? 'bg-black/10 text-stone-900' : 'bg-white/10 text-stone-400'}`}>
-              06
+              {String(hardSkills.length).padStart(2, '0')}
             </span>
           </button>
 
@@ -199,7 +211,7 @@ export default function Skills() {
             <HeartHandshake className={`w-4 h-4 ${activeTab === 'soft' ? 'text-red-600' : 'text-stone-500 group-hover:text-white'}`} />
             <span>[ 02 // HABILIDADES BLANDAS · SOFT SKILLS ]</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${activeTab === 'soft' ? 'bg-black/10 text-stone-900' : 'bg-white/10 text-stone-400'}`}>
-              06
+              {String(softSkills.length).padStart(2, '0')}
             </span>
           </button>
         </div>
@@ -254,15 +266,10 @@ export default function Skills() {
         </div>
 
         {/* PIE DE SECCIÓN: MANIFIESTO DE RIGOR Y DISPONIBILIDAD */}
-        <footer className="skills-footer mt-16 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs">
+        <footer className="skills-footer mt-16 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-center font-mono text-xs text-center">
           <div className="flex items-center gap-3 text-stone-300">
             <CheckCircle2 className="w-5 h-5 text-red-500 flex-shrink-0" />
             <span>DISPONIBILIDAD INMEDIATA // CÓDIGO LIMPIO, COMPROBADO Y ESCALABLE A PRODUCCIÓN.</span>
-          </div>
-
-          <div className="flex items-center gap-2 text-stone-400 uppercase tracking-widest">
-            <Sparkles className="w-4 h-4 text-red-500" />
-            <span>ESTÁNDARES EDITORIALES // 2026</span>
           </div>
         </footer>
       </div>

@@ -6,25 +6,23 @@ export default function About() {
     {
       trigger: '.about-header',
       selector: '.about-header > *',
-      duration: 1.0,
-      stagger: 0.14,
-      y: 40,
-      blur: 8
+      duration: 0.85,
+      stagger: 0.1,
+      y: 35
     },
     {
       trigger: '.about-text-col',
-      selector: '.about-text-col > *',
-      duration: 1.0,
-      stagger: 0.16,
-      y: 35,
-      blur: 6
+      selector: '.about-text-col > p',
+      duration: 0.8,
+      stagger: 0.12,
+      y: 25
     },
     {
       trigger: '.about-card',
       selector: '.about-card',
-      duration: 1.1,
-      y: 45,
-      blur: 8
+      duration: 0.85,
+      y: 35,
+      scale: 0.97
     }
   ]);
 
@@ -33,13 +31,12 @@ export default function About() {
       id="sobre-mi"
       ref={sectionRef}
       aria-labelledby="about-title"
-      className="relative bg-[#0c0c10] text-stone-100 pt-24 pb-28 overflow-hidden border-t border-white/5"
+      className="relative bg-[#0c0c10] text-stone-100 pt-20 pb-28 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* ENCABEZADO EDITORIAL DE SECCIÓN */}
         <header className="about-header mb-14">
-          <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest">
-            <span className="w-8 h-px bg-red-500 inline-block" />
+          <div className="flex items-center gap-2 text-red-500 font-mono text-xs uppercase tracking-widest">
             <span>[ 01 // MANIFIESTO ]</span>
           </div>
 
@@ -47,24 +44,28 @@ export default function About() {
             id="about-title"
             className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-display tracking-tight text-white mt-4 uppercase leading-[0.95]"
           >
-            FUSIONANDO CÓDIGO PRECISO, <br className="hidden md:block" />
+            FUSIONANDO DISEÑO IMPACTANTE, <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-white">
-              ARQUITECTURA MODERNA
+              CÓDIGO SÓLIDO
             </span>{' '}
-            Y EXPERIENCIAS MEMORABLES.
+            Y RESULTADOS REALES.
           </h2>
         </header>
 
         {/* CONTENIDO EDITORIAL A DOS COLUMNAS */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           {/* Columna Izquierda: Narrativa y Métricas (7 cols) */}
-          <div className="about-text-col lg:col-span-7 space-y-8">
+          <div className="about-text-col lg:col-span-7 space-y-6">
             <p className="text-stone-300 text-lg sm:text-xl font-normal leading-relaxed">
-              Desarrollador web enfocado en la convergencia entre ingeniería de software de alto nivel y diseño interactivo de vanguardia. Concibo cada proyecto no como una página estática convencional, sino como un producto digital interactivo, rápido y con identidad propia.
+              Desarrollo sitios y aplicaciones web que combinan una estética visual moderna con un funcionamiento rápido y sin fallas. Para quien visita la web, la experiencia es atractiva, intuitiva y fluida; para tu proyecto o negocio, se traduce en profesionalismo, confianza y mejores resultados.
             </p>
 
             <p className="text-stone-400 text-sm sm:text-base leading-relaxed">
-              Priorizo interfaces con una arquitectura modular limpia, optimización exhaustiva de <strong className="text-white font-semibold">Core Web Vitals</strong> y microinteracciones fluidas que elevan la percepción de valor de cualquier producto o marca.
+              Detrás de cada pantalla aplico ingeniería rigurosa: código limpio y escalable, arquitectura modular conectada a servidores y bases de datos, y una optimización exhaustiva de velocidad de carga y accesibilidad.
+            </p>
+
+            <p className="text-stone-400 text-sm sm:text-base leading-relaxed">
+              Mi objetivo es simple: que no tengas que elegir entre un producto que se vea bien o uno que funcione bien, sino construir una solución completa que destaque en ambos aspectos.
             </p>
           </div>
 
@@ -107,14 +108,14 @@ export default function About() {
                   <dt className="text-stone-500 uppercase tracking-widest text-[10px]">Enfoque Principal</dt>
                   <dd className="text-stone-200 mt-0.5 flex items-center gap-2">
                     <Layers className="w-3.5 h-3.5 text-red-400" />
-                    <span>Frontend Avanzado, Interactividad & Animaciones</span>
+                    <span>Desarrollo Web Fullstack & Experiencias Interactivas</span>
                   </dd>
                 </div>
 
                 <div>
                   <dt className="text-stone-500 uppercase tracking-widest text-[10px]">Metodología</dt>
                   <dd className="text-stone-300 mt-0.5 text-[11px] leading-relaxed font-sans">
-                    Desarrollo iterativo, código tipado/modular, accesibilidad WCAG y rendimiento como prioridad no negociable.
+                    Código modular, velocidad de carga optimizada, estándares de accesibilidad y foco en la experiencia del usuario.
                   </dd>
                 </div>
               </dl>
@@ -139,4 +140,3 @@ export default function About() {
     </section>
   );
 }
-

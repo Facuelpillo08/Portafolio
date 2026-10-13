@@ -1,0 +1,17 @@
+{
+  "name": "Facundo Acosta | Desarrollador Web",
+  "short_name": "Facundo Acosta",
+  "description": "Portafolio de Facundo Acosta - Desarrollador Web Fullstack especializado en frontend avanzado, rendimiento y arquitecturas modernas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0c10",
+  "theme_color": "#0c0c10",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

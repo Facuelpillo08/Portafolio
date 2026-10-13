@@ -3,105 +3,180 @@ import gsap from 'gsap';
 
 /**
  * Custom Hook para revelado editorial por scroll utilizando IntersectionObserver + GSAP.
- * Garantiza un 100% de confiabilidad en la detección de visibilidad sin depender de
- * cálculos de desplazamiento fijos de ScrollTrigger ni verse afectado por layout-shifts.
  *
- * @param {Array} config - Array de configuraciones para cada grupo de elementos:
- *   [
- *     {
- *       trigger: '.selector-del-disparador', // Opcional, si no se indica usa `selector`
- *       selector: '.elementos-a-animar',
- *       duration: 0.95,
- *       stagger: 0.12,
- *       y: 35,
- *       blur: 6,
- *       delay: 0,
- *       rootMargin: '0px 0px -40px 0px'
- *     }
- *   ]
+ * Características clave:
+ * 1. Observación individual (`individual: true`) para que cada fila/tarjeta/ítem
+ *    se anime conforme el usuario va haciendo scroll y entra en pantalla.
+ * 2. Si un elemento ya está visible en el viewport al cargar la página, se anima inmediatamente.
+ * 3. Animaciones de entrada fluidas (desplazamiento vertical, opacidad y micro-escala).
+ * 4. Limpieza total de propiedades inline (`clearProps: 'all'`) para garantizar que
+ *    los efectos hover (CSS), antialiasing y transformaciones nativas funcionen al 100%.
+ * 5. Seguro frente a React 19 / StrictMode y cambios de renderizado.
  */
 export function useScrollReveal(config = []) {
   const containerRef = useRef(null);
-  const initialConfig = useRef(config);
+  const configRef = useRef(config);
+
+  useEffect(() => {
+    configRef.current = config;
+  }, [config]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Respetar preferencias de accesibilidad
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-
     const container = containerRef.current;
     if (!container) return;
 
-    // Fallback: si el navegador no soporta IntersectionObserver, mantener visible
     if (!('IntersectionObserver' in window)) {
       return;
     }
 
-    const currentConfig = initialConfig.current;
-
-    // 1. Establecer estado inicial oculto con suavidad
-    currentConfig.forEach(({ selector, y = 35, blur = 6 }) => {
-      const els = container.querySelectorAll(selector);
-      if (els.length > 0) {
-        gsap.set(els, {
-          opacity: 0,
-          y,
-          filter: `blur(${blur}px)`,
-          willChange: 'opacity, transform, filter'
-        });
-      }
-    });
-
-    // 2. Crear observadores de intersección independientes por grupo
+    const currentConfig = configRef.current;
     const observers = [];
+    const animatedElements = new WeakSet();
 
     currentConfig.forEach(({
       trigger,
       selector,
-      duration = 0.95,
-      stagger = 0.12,
+      duration = 0.85,
+      stagger = 0.1,
+      y = 35,
+      scale = 0.98,
       delay = 0,
-      rootMargin = '0px 0px -40px 0px'
+      rootMargin = '0px 0px -40px 0px',
+      individual = false,
+      scaleX = false
     }) => {
-      const triggerEl = container.querySelector(trigger || selector);
-      if (!triggerEl) return;
+      // Modo individual: cada elemento se observa y anima por separado al entrar en el viewport
+      if (individual) {
+        const items = container.querySelectorAll(selector);
+        if (items.length === 0) return;
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const targets = container.querySelectorAll(selector);
-              if (targets.length > 0) {
-                gsap.to(targets, {
-                  opacity: 1,
-                  y: 0,
-                  filter: 'blur(0px)',
-                  duration,
-                  stagger,
-                  delay,
-                  ease: 'power3.out',
-                  overwrite: 'auto',
-                  clearProps: 'willChange'
-                });
-              }
-              observer.unobserve(entry.target);
-            }
+        items.forEach((item, index) => {
+          if (scaleX) {
+            gsap.set(item, {
+              scaleX: 0,
+              transformOrigin: 'left',
+              willChange: 'transform'
+            });
+          } else {
+            gsap.set(item, {
+              opacity: 0,
+              y,
+              scale,
+              willChange: 'opacity, transform'
+            });
+          }
+
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting && !animatedElements.has(entry.target)) {
+                  animatedElements.add(entry.target);
+                  if (scaleX) {
+                    gsap.fromTo(
+                      entry.target,
+                      { scaleX: 0 },
+                      {
+                        scaleX: 1,
+                        duration,
+                        delay: delay + (index % 3) * 0.05,
+                        ease: 'power2.out',
+                        clearProps: 'all'
+                      }
+                    );
+                  } else {
+                    gsap.fromTo(
+                      entry.target,
+                      { opacity: 0, y, scale },
+                      {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration,
+                        delay: delay + (index % 3) * 0.04,
+                        ease: 'power3.out',
+                        clearProps: 'all'
+                      }
+                    );
+                  }
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.08, rootMargin }
+          );
+
+          observer.observe(item);
+          observers.push(observer);
+        });
+      } else {
+        // Modo grupo/bloque: el trigger anima el conjunto seleccionado
+        const triggerEl = container.querySelector(trigger || selector);
+        const targets = container.querySelectorAll(selector);
+        if (!triggerEl || targets.length === 0) return;
+
+        if (scaleX) {
+          gsap.set(targets, {
+            scaleX: 0,
+            transformOrigin: 'left',
+            willChange: 'transform'
           });
-        },
-        {
-          threshold: 0.05,
-          rootMargin
+        } else {
+          gsap.set(targets, {
+            opacity: 0,
+            y,
+            scale,
+            willChange: 'opacity, transform'
+          });
         }
-      );
 
-      observer.observe(triggerEl);
-      observers.push(observer);
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && !animatedElements.has(entry.target)) {
+                animatedElements.add(entry.target);
+                if (scaleX) {
+                  gsap.fromTo(
+                    targets,
+                    { scaleX: 0 },
+                    {
+                      scaleX: 1,
+                      duration,
+                      stagger,
+                      delay,
+                      ease: 'power2.out',
+                      clearProps: 'all'
+                    }
+                  );
+                } else {
+                  gsap.fromTo(
+                    targets,
+                    { opacity: 0, y, scale },
+                    {
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      duration,
+                      stagger,
+                      delay,
+                      ease: 'power3.out',
+                      clearProps: 'all'
+                    }
+                  );
+                }
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.08, rootMargin }
+        );
+
+        observer.observe(triggerEl);
+        observers.push(observer);
+      }
     });
 
-    // Limpieza al desmontar
     return () => {
       observers.forEach((obs) => obs.disconnect());
     };

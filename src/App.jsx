@@ -9,10 +9,15 @@ import { ChevronUp } from 'lucide-react';
 
 export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [scrollRatio, setScrollRatio] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500);
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalScroll > 0) {
+        setScrollRatio(Math.min(1, Math.max(0, window.scrollY / totalScroll)));
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -25,12 +30,22 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0c0c10] text-stone-100 selection:bg-red-600 selection:text-white">
-      <main>
+      {/* Barra de progreso de lectura / scroll editorial superior */}
+      <div
+        className="fixed top-0 left-0 right-0 h-[2.5px] z-50 bg-gradient-to-r from-red-600 via-rose-500 to-red-600 shadow-[0_0_12px_rgba(239,68,68,0.85)] origin-left pointer-events-none transition-transform duration-75 ease-out"
+        style={{ transform: `scaleX(${scrollRatio})` }}
+        aria-hidden="true"
+      />
+
+      <main className="relative">
         <Hero />
-        <About />
-        <FeaturedProjects />
-        <Skills />
-        <Contact />
+        {/* El Manifiesto y las secciones siguientes fluyen con el scroll natural */}
+        <div className="relative z-10 bg-[#0c0c10] -mt-px">
+          <About />
+          <FeaturedProjects />
+          <Skills />
+          <Contact />
+        </div>
       </main>
 
       <Footer />

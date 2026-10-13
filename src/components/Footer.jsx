@@ -18,7 +18,6 @@ export default function Footer() {
 
         <div className="flex flex-col sm:items-end gap-1 text-[11px] text-stone-500">
           <p>&copy; {currentYear} Facundo Acosta. Todos los derechos reservados.</p>
-          <p className="tracking-widest uppercase">DISEÑO & DESARROLLO INSPIRADO EN ESTÁNDARES AWWWARDS</p>
         </div>
       </div>
     </footer>

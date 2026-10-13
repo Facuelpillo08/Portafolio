@@ -12,25 +12,29 @@ export default function FeaturedProjects() {
     {
       trigger: '.projects-header',
       selector: '.projects-header > *',
-      duration: 1.0,
-      stagger: 0.14,
-      y: 40,
-      blur: 8
+      duration: 0.85,
+      stagger: 0.12,
+      y: 35
     },
     {
-      trigger: '.projects-list',
-      selector: '.project-row',
+      selector: '.project-line',
+      individual: true,
+      scaleX: true,
       duration: 0.9,
-      stagger: 0.12,
-      y: 35,
-      blur: 6
+      ease: 'power2.out'
+    },
+    {
+      selector: '.project-row',
+      individual: true,
+      duration: 0.8,
+      y: 30,
+      scale: 0.99
     },
     {
       trigger: '.projects-footer',
       selector: '.projects-footer',
-      duration: 0.85,
-      y: 25,
-      blur: 6
+      duration: 0.8,
+      y: 20
     }
   ]);
 
@@ -79,7 +83,7 @@ export default function FeaturedProjects() {
         {/* LISTA EDITORIAL INTERACTIVA */}
         <div
           role="list"
-          className="projects-list divide-y divide-white/10 border-b border-white/10"
+          className="projects-list border-b border-white/10"
           onMouseLeave={() => setActiveProject(null)}
         >
           {projects.map((project) => {
@@ -88,15 +92,23 @@ export default function FeaturedProjects() {
                 key={project.id}
                 role="listitem"
                 onMouseEnter={() => setActiveProject(project)}
-                className="project-row group relative py-10 md:py-14 transition-all duration-300"
+                className="project-row group relative py-8 md:py-12 transition-all duration-300"
               >
+                {/* LÍNEA DIVISORIA EDITORIAL DINÁMICA CON SCALE-X */}
+                <div
+                  className="project-line w-full h-px bg-gradient-to-r from-red-500/70 via-white/15 to-white/5 mb-8 origin-left"
+                  aria-hidden="true"
+                />
+
                 {/* FILA PRINCIPAL */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 cursor-pointer">
                   {/* Número & Título con desplazamiento suave */}
                   <div className="flex items-start sm:items-center gap-6 md:gap-10">
-                    <span className="font-mono text-xs sm:text-sm tracking-widest text-stone-500 group-hover:text-red-500 transition-colors pt-1 sm:pt-0">
-                      /{project.number}
-                    </span>
+                    <div className="overflow-hidden">
+                      <span className="font-mono text-xs sm:text-sm tracking-widest text-stone-500 group-hover:text-red-500 transition-colors inline-block pt-1 sm:pt-0">
+                        /{project.number}
+                      </span>
+                    </div>
 
                     <div>
                       <h3 className="text-2xl sm:text-3xl md:text-5xl font-extrabold font-display uppercase tracking-tight text-white group-hover:text-red-500 group-hover:translate-x-3 transition-all duration-300">
@@ -154,12 +166,12 @@ export default function FeaturedProjects() {
 
                 {/* VISTA PREVIA INTEGRADA EN MÓVIL / PANTALLAS PEQUEÑAS (< lg) */}
                 <div className="mt-6 lg:hidden space-y-4">
-                  <figure className="aspect-video w-full rounded-xl overflow-hidden border border-white/10 bg-stone-900">
+                  <figure className="aspect-video w-full rounded-xl overflow-hidden border border-white/10 bg-stone-900 group/img">
                     <img
                       src={project.image}
                       alt={project.title}
                       loading="lazy"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 ease-out"
                     />
                   </figure>
                   <p className="text-stone-400 text-xs sm:text-sm leading-relaxed">
@@ -177,7 +189,7 @@ export default function FeaturedProjects() {
             [ MÁS PROYECTOS Y EXPERIMENTOS DISPONIBLES EN GITHUB ]
           </span>
           <a
-            href="https://github.com/facundoacosta"
+            href="https://github.com/Facuelpillo08"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-stone-200 hover:text-red-400 font-bold uppercase tracking-wider transition-colors"
@@ -205,6 +217,10 @@ export default function FeaturedProjects() {
               <img
                 src={activeProject.image}
                 alt=""
+                loading="lazy"
+                decoding="async"
+                width="320"
+                height="180"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

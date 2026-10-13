@@ -8,7 +8,16 @@ export const skillsData = [
     skills: ['React.js', 'Vite', 'React Router', 'Context API', 'State Management', 'CSS Modules']
   },
   {
+    category: 'Servidores & Backend',
+    skills: ['Node.js', 'Express.js', 'APIs RESTful', 'Servidores HTTP', 'Autenticación & JWT', 'Middlewares']
+  },
+  {
+    category: 'Bases de Datos',
+    skills: ['PostgreSQL', 'MySQL', 'MongoDB', 'Modelado de Datos', 'Consultas SQL', 'ORM / Supabase']
+  },
+  {
     category: 'Herramientas',
     skills: ['Git & GitHub', 'NPM / Yarn', 'Chrome DevTools', 'Postman', 'Figma (Handoff)', 'VS Code']
   }
 ];
+
