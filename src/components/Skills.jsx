@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Code2, HeartHandshake, CheckCircle2 } from 'lucide-react';
 import gsap from 'gsap';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { hardSkills, softSkills } from '../data/skills';
 
 export default function Skills() {
   const [activeTab, setActiveTab] = useState('hard');
@@ -47,110 +48,6 @@ export default function Skills() {
     });
   };
 
-  const hardSkills = [
-    {
-      index: '/01',
-      title: 'React 19 & Ecosistema Moderno',
-      tag: 'FRAMEWORK & STATE',
-      description: 'Arquitectura modular de componentes, Custom Hooks de alto rendimiento, gestión de estado predecible y optimización de renderizado.',
-      tools: ['React 19', 'Hooks', 'Context API', 'Vite']
-    },
-    {
-      index: '/02',
-      title: 'JavaScript (ES6+) & TypeScript',
-      tag: 'CORE ENGINE',
-      description: 'Dominio de asincronía (Promises, Async/Await), closures, manipulación nativa del DOM y contratos tipados libres de errores.',
-      tools: ['ES6+', 'TypeScript', 'Web APIs', 'Fetch']
-    },
-    {
-      index: '/03',
-      title: 'Tailwind CSS v4 & Sistemas de Diseño',
-      tag: 'DESIGN SYSTEMS',
-      description: 'Creación de interfaces responsive píxel-perfect, tokens de diseño consistentes y micro-interacciones fluidas a 60 FPS.',
-      tools: ['Tailwind v4', 'CSS Grid/Flexbox', 'Animaciones', 'Glassmorphism']
-    },
-    {
-      index: '/04',
-      title: 'HTML5 Semántico & Accesibilidad (WCAG 2.2)',
-      tag: 'A11Y & SEO',
-      description: 'Estructuración semántica nativa para máxima indexabilidad en motores de búsqueda y total compatibilidad con lectores de pantalla.',
-      tools: ['HTML5 Semántico', 'ARIA Standards', 'Keyboard Nav', 'SEO On-Page']
-    },
-    {
-      index: '/05',
-      title: 'Core Web Vitals & Optimización Web',
-      tag: 'PERFORMANCE',
-      description: 'Auditoría y optimización de métricas de carga (LCP, FID/INP, CLS), lazy loading agresivo, compresión de assets y zero-layout-shift.',
-      tools: ['Lighthouse 100', 'Code Splitting', 'Asset Minify', 'Cache']
-    },
-    {
-      index: '/06',
-      title: 'Git, GitHub & Flujos de Despliegue',
-      tag: 'WORKFLOW & CI/CD',
-      description: 'Control de versiones con conventional commits, branch management, code reviews rigurosas y despliegues automatizados en Vercel/Netlify.',
-      tools: ['Git', 'GitHub', 'CI/CD Pipelines', 'Vercel']
-    },
-    {
-      index: '/07',
-      title: 'Servidores & Backend (Node.js & Express)',
-      tag: 'SERVERS & BACKEND',
-      description: 'Creación y configuración de servidores web, arquitectura de APIs RESTful, controladores, middlewares, autenticación segura y comunicación cliente-servidor.',
-      tools: ['Node.js', 'Express', 'APIs RESTful', 'HTTP / CORS']
-    },
-    {
-      index: '/08',
-      title: 'Bases de Datos Relacionales & NoSQL',
-      tag: 'DATABASE & DATA',
-      description: 'Modelado y diseño de esquemas, consultas optimizadas, persistencia de datos relacional y no relacional, e integración con ORMs y servicios en la nube.',
-      tools: ['PostgreSQL', 'MySQL', 'MongoDB', 'Supabase / ORM']
-    }
-  ];
-
-  const softSkills = [
-    {
-      index: '/01',
-      title: 'Resolución Pragmática de Problemas',
-      tag: 'PROBLEM SOLVING',
-      description: 'Descomposición analítica de problemas complejos para crear soluciones técnicas simples, directas y libres de sobreingeniería.',
-      tools: ['Análisis Crítico', 'Arquitectura Simple', 'Depuración Rápida']
-    },
-    {
-      index: '/02',
-      title: 'Atención Rigurosa al Detalle Píxel-Perfect',
-      tag: 'CRAFT & QUALITY',
-      description: 'Sensibilidad estética extrema para traducir diseños de Figma a código fiel, cuidando espaciados, jerarquías visuales y micro-interacciones.',
-      tools: ['Figma to Code', 'Micro-animaciones', 'Consistencia Visual']
-    },
-    {
-      index: '/03',
-      title: 'Comunicación Asertiva y Trabajo en Equipo',
-      tag: 'COLLABORATION',
-      description: 'Transparencia constante en el progreso, comunicación clara de decisiones técnicas y colaboración fluida con diseñadores y líderes de producto.',
-      tools: ['Sincronía Ágil', 'Feedback Constructivo', 'Documentación Clara']
-    },
-    {
-      index: '/04',
-      title: 'Pensamiento Crítico y Enfoque en UX',
-      tag: 'USER EXPERIENCE',
-      description: 'Evaluación de cada línea de código en función del impacto real en el usuario final: facilidad de uso, tiempos de respuesta y claridad mental.',
-      tools: ['Ergonomía Digital', 'Empatía de Usuario', 'Testeo Continuo']
-    },
-    {
-      index: '/05',
-      title: 'Adaptabilidad & Aprendizaje Acelerado',
-      tag: 'AGILITY',
-      description: 'Capacidad de asimilar herramientas y paradigmas emergentes con rapidez, adaptándose a las necesidades dinámicas de cada proyecto.',
-      tools: ['Curva de Aprendizaje Rápida', 'Resiliencia', 'Curiosidad Técnica']
-    },
-    {
-      index: '/06',
-      title: 'Autonomía y Compromiso con las Fechas',
-      tag: 'OWNERSHIP',
-      description: 'Gestión proactiva del tiempo, responsabilidad directa sobre los entregables y rigor para llevar funcionalidades a producción en fecha.',
-      tools: ['Auto-organización', 'Priorización de Impacto', 'Entrega a Tiempo']
-    }
-  ];
-
   const currentList = activeTab === 'hard' ? hardSkills : softSkills;
 
   return (
@@ -158,15 +55,15 @@ export default function Skills() {
       id="habilidades"
       ref={sectionRef}
       aria-labelledby="skills-title"
-      className="relative bg-[#0c0c10] text-stone-100 py-32 px-6 md:px-12 border-t border-white/10 overflow-hidden"
+      className="relative bg-[#0c0c10] text-stone-100 py-12 md:py-16 px-6 md:px-12 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ENCABEZADO EDITORIAL */}
-        <header className="skills-header mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-white/10">
+        <header className="skills-header mb-10 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-white/10">
           <div>
             <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest mb-3">
               <span className="w-8 h-px bg-red-500 inline-block" />
-              <span>[ 03 // CAPACIDADES & MAESTRÍA ]</span>
+              <span>[ 03 · HABILIDADES & TECNOLOGÍAS ]</span>
             </div>
             <h2
               id="skills-title"
@@ -177,12 +74,12 @@ export default function Skills() {
           </div>
 
           <p className="text-stone-400 font-mono text-xs md:text-sm max-w-md uppercase tracking-wider leading-relaxed">
-            COMBINACIÓN DE RIGOR TÉCNICO EN FRONTEND, BACKEND, BASES DE DATOS Y METODOLOGÍA HUMANA ORIENTADA AL IMPACTO.
+            TECNOLOGÍAS Y METODOLOGÍAS QUE APLICO PARA CREAR SITIOS Y APLICACIONES WEB COMPLETAS, RÁPIDAS Y ESCALABLES.
           </p>
         </header>
 
         {/* SELECTOR DE PESTAÑAS EDITORIAL (TABS DE ALTA GAMA) */}
-        <div className="skills-tabs flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 md:gap-4 mb-16 border-b border-white/10 pb-6">
+        <div className="skills-tabs flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 md:gap-4 mb-8 md:mb-10 border-b border-white/10 pb-6">
           <button
             type="button"
             onClick={() => handleTabChange('hard')}
@@ -193,7 +90,7 @@ export default function Skills() {
             }`}
           >
             <Code2 className={`w-4 h-4 ${activeTab === 'hard' ? 'text-red-600' : 'text-stone-500 group-hover:text-white'}`} />
-            <span>[ 01 // HABILIDADES DURAS · HARD SKILLS ]</span>
+            <span>Habilidades Técnicas</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${activeTab === 'hard' ? 'bg-black/10 text-stone-900' : 'bg-white/10 text-stone-400'}`}>
               {String(hardSkills.length).padStart(2, '0')}
             </span>
@@ -209,7 +106,7 @@ export default function Skills() {
             }`}
           >
             <HeartHandshake className={`w-4 h-4 ${activeTab === 'soft' ? 'text-red-600' : 'text-stone-500 group-hover:text-white'}`} />
-            <span>[ 02 // HABILIDADES BLANDAS · SOFT SKILLS ]</span>
+            <span>Habilidades Profesionales</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${activeTab === 'soft' ? 'bg-black/10 text-stone-900' : 'bg-white/10 text-stone-400'}`}>
               {String(softSkills.length).padStart(2, '0')}
             </span>
@@ -266,10 +163,10 @@ export default function Skills() {
         </div>
 
         {/* PIE DE SECCIÓN: MANIFIESTO DE RIGOR Y DISPONIBILIDAD */}
-        <footer className="skills-footer mt-16 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-center font-mono text-xs text-center">
+        <footer className="skills-footer mt-10 md:mt-12 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center justify-center font-mono text-xs text-center">
           <div className="flex items-center gap-3 text-stone-300">
-            <CheckCircle2 className="w-5 h-5 text-red-500 flex-shrink-0" />
-            <span>DISPONIBILIDAD INMEDIATA // CÓDIGO LIMPIO, COMPROBADO Y ESCALABLE A PRODUCCIÓN.</span>
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+            <span>Disponible para nuevos desafíos con código prolijo, mantenible y probado para producción.</span>
           </div>
         </footer>
       </div>

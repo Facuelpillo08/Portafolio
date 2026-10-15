@@ -54,14 +54,14 @@ export default function FeaturedProjects() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       aria-labelledby="projects-title"
-      className="relative bg-[#0c0c10] text-stone-100 py-28 px-6 md:px-12 border-t border-white/10 overflow-hidden"
+      className="relative min-h-screen bg-[#0c0c10] text-stone-100 py-12 md:py-16 px-6 md:px-12 overflow-hidden scroll-mt-0"
     >
       {/* Luz ambiental sutil en el fondo */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-red-600/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* ENCABEZADO EDITORIAL */}
-        <header className="projects-header mb-20 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
+        <header className="projects-header mb-10 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
           <div>
             <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest mb-3">
               <span className="w-8 h-px bg-red-500 inline-block" />
@@ -184,7 +184,7 @@ export default function FeaturedProjects() {
         </div>
 
         {/* FOOTER DE SECCIÓN / GITHUB EXPLORER */}
-        <div className="projects-footer mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-stone-400">
+        <div className="projects-footer mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-stone-400">
           <span className="tracking-widest uppercase">
             [ MÁS PROYECTOS Y EXPERIMENTOS DISPONIBLES EN GITHUB ]
           </span>

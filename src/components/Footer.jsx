@@ -2,7 +2,7 @@ const currentYear = new Date().getFullYear();
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#08080b] text-stone-300 py-12 px-6 md:px-12 font-mono text-xs">
+    <footer className="bg-[#08080b] text-stone-300 py-12 px-6 md:px-12 font-mono text-xs">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
         <div>
           <a
@@ -12,7 +12,7 @@ export default function Footer() {
             FACUNDO ACOSTA<span className="text-red-500">.</span>
           </a>
           <p className="text-stone-500 text-[11px] uppercase tracking-wider">
-            PORTAFOLIO EDITORIAL // EDICIÓN 2026
+            Desarrollo Web & Experiencias Digitales · 2026
           </p>
         </div>
 
