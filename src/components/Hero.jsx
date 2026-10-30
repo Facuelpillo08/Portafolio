@@ -10,6 +10,7 @@ export default function Hero() {
   const backTitleRef = useRef(null);
   const frontTitleRef = useRef(null);
   const bgRef = useRef(null);
+  const silhouetteContainerRef = useRef(null);
 
   // Coordenadas objetivo (inmediatas) y actuales (interpoladas con inercia elástica)
   const targetMouse = useRef({ x: 0, y: 0 });
@@ -66,7 +67,7 @@ export default function Hero() {
           duration: 0.32,
           stagger: 0.035,
           ease: 'power3.out',
-          clearProps: 'transform'
+          clearProps: 'transform,opacity'
         },
         0.44
       );
@@ -133,7 +134,7 @@ export default function Hero() {
           duration: 0.26,
           stagger: 0.018,
           ease: 'power2.out',
-          clearProps: 'transform'
+          clearProps: 'transform,opacity'
         },
         1.18
       );
@@ -248,21 +249,68 @@ export default function Hero() {
         const shiftX = mx * 26;
         const shiftY = my * 18;
 
-        // A) "FACUNDO ACOSTA" en capa trasera (z-10, 100% VISIBLE SIEMPRE)
+        // ENFOQUE ÓPTICO UNIFICADO (DEPTH OF FIELD & DISOLUCIÓN A NEGRO)
+        // Progresivo y suave durante el 0% a 85% del recorrido hacia el Manifiesto
+        const heroProgress = Math.min(1, Math.max(0, scrollY / (window.innerHeight * 0.95)));
+        const opticalFadeProgress = Math.min(1, heroProgress / 0.85);
+
+        // Desenfoque óptico progresivo de lente (0px a 14px)
+        const opticalBlur = (opticalFadeProgress * 14).toFixed(1);
+        const blurFilter = Number(opticalBlur) > 0.2 ? `blur(${opticalBlur}px)` : 'none';
+
+        // Disolución suave y gradual hacia el negro de estudio (#0c0c10)
+        const sceneOpacity = Math.max(0, 1 - Math.pow(opticalFadeProgress, 1.25)).toFixed(3);
+
+        // Capa delantera "DESARROLLADOR WEB": Se desvanece de forma anticipada y desciende suave
+        const frontOpacity = Math.max(0, 1 - heroProgress * 2.8).toFixed(3);
+        const frontShiftY = heroProgress * 60;
+        const frontBlur = Number(opticalBlur) > 0.3 ? `blur(${(opticalBlur * 0.7).toFixed(1)}px)` : 'none';
+
+        // Enlaces de las 4 esquinas: Se desvanecen al iniciar el avance
+        const cornerOpacity = Math.max(0, 1 - heroProgress * 3.8).toFixed(3);
+
+        // Fondo de estudio: Se funde hacia el negro puro de estudio (#0c0c10)
+        const bgOpacity = Math.max(0, 1 - heroProgress * 1.35).toFixed(3);
+        const bgBlur = Number(opticalBlur) > 0.4 ? `blur(${(opticalBlur * 0.5).toFixed(1)}px)` : 'none';
+
+        // A) "FACUNDO ACOSTA" en capa trasera: Parallax sutil sin zoom invasivo (escala natural 1.0)
         if (backTitleRef.current) {
           const backY = shiftY * 0.85 - scrollY * 0.22;
           backTitleRef.current.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translate3d(${(shiftX * 0.85).toFixed(1)}px, ${backY.toFixed(1)}px, 0px)`;
+          backTitleRef.current.style.opacity = sceneOpacity;
+          backTitleRef.current.style.filter = blurFilter;
         }
 
-        // B) "DESARROLLADOR WEB" en capa delantera (z-30, 100% VISIBLE SIEMPRE)
+        // B) Silueta central de Facundo: Parallax sutil y desenfoque óptico unificado en escala natural (1.0)
+        if (silhouetteContainerRef.current) {
+          const silY = -scrollY * 0.16;
+          silhouetteContainerRef.current.style.transform = `perspective(1000px) translate3d(0px, ${silY.toFixed(1)}px, 0px)`;
+          silhouetteContainerRef.current.style.opacity = sceneOpacity;
+          silhouetteContainerRef.current.style.filter = blurFilter;
+        }
+
+        // C) "DESARROLLADOR WEB" en capa delantera
         if (frontTitleRef.current) {
-          const frontY = -shiftY * 0.55 + scrollY * 0.12;
+          const frontY = -shiftY * 0.55 + frontShiftY;
           frontTitleRef.current.style.transform = `perspective(1000px) rotateX(${(tiltX * 0.5).toFixed(2)}deg) rotateY(${(tiltY * 0.5).toFixed(2)}deg) translate3d(${(-shiftX * 0.55).toFixed(1)}px, ${frontY.toFixed(1)}px, 0px)`;
+          frontTitleRef.current.style.opacity = frontOpacity;
+          frontTitleRef.current.style.filter = frontBlur;
         }
 
-        // C) Fondo de estudio en z-0: parallax suave hacia abajo
+        // D) Fondo de estudio
         if (bgRef.current) {
-          bgRef.current.style.transform = `translate3d(0px, ${(scrollY * 0.18).toFixed(1)}px, 0px)`;
+          bgRef.current.style.transform = `translate3d(0px, ${(scrollY * 0.12).toFixed(1)}px, 0px)`;
+          bgRef.current.style.opacity = bgOpacity;
+          bgRef.current.style.filter = bgBlur;
+        }
+
+        // E) Esquinas del hero
+        const corners = containerRef.current?.querySelectorAll('.hero-corner');
+        if (corners) {
+          corners.forEach((corner) => {
+            corner.style.opacity = cornerOpacity;
+            corner.style.pointerEvents = heroProgress > 0.1 ? 'none' : 'auto';
+          });
         }
       }
 
@@ -368,7 +416,7 @@ export default function Hero() {
         {/* 4. CAPA TRASERA: "FACUNDO ACOSTA" (z-10) - Detrás de la silueta, delante del fondo */}
         <div
           ref={backTitleRef}
-          className="hero-back-title absolute top-[20%] md:top-[16%] left-0 right-0 z-10 flex justify-center items-center pointer-events-none will-change-transform"
+          className="hero-back-title absolute top-[20%] md:top-[16%] left-0 right-0 z-10 flex justify-center items-center pointer-events-none will-change-[transform,opacity,filter]"
           style={{
             transform: 'translate3d(0px, 0px, 0px)'
           }}
@@ -441,7 +489,8 @@ export default function Hero() {
 
         {/* 5. SILUETA ÚNICA DE FACUNDO (z-20) - Capa GPU dedicada, inamovible, 100% visible siempre */}
         <div
-          className="hero-silhouette-container absolute inset-0 z-20 flex items-end justify-center pointer-events-none pb-0"
+          ref={silhouetteContainerRef}
+          className="hero-silhouette-container absolute inset-0 z-20 flex items-end justify-center pointer-events-none pb-0 will-change-[transform,opacity,filter]"
           style={{
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden',

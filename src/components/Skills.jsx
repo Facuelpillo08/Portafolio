@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { Code2, HeartHandshake, CheckCircle2 } from 'lucide-react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { hardSkills, softSkills } from '../data/skills';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function Skills() {
   const [activeTab, setActiveTab] = useState('hard');
@@ -36,6 +41,8 @@ export default function Skills() {
     }
   ]);
 
+
+
   const handleTabChange = (tab) => {
     if (tab === activeTab) return;
     setActiveTab(tab);
@@ -55,14 +62,17 @@ export default function Skills() {
       id="habilidades"
       ref={sectionRef}
       aria-labelledby="skills-title"
-      className="relative bg-[#0c0c10] text-stone-100 py-12 md:py-16 px-6 md:px-12 overflow-hidden"
+      className="relative bg-[#0c0c10] text-stone-100 pt-12 pb-10 md:pt-16 md:pb-14 px-6 md:px-12 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* ENCABEZADO EDITORIAL */}
-        <header className="skills-header mb-10 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-white/10">
+      {/* Luz ambiental sutil */}
+      <div className="absolute top-1/3 -left-20 w-[600px] h-[400px] bg-red-600/[0.035] rounded-full blur-[170px] pointer-events-none" />
+
+      <div className="skills-content-inner max-w-7xl mx-auto relative z-10 will-change-[transform,opacity,filter]">
+        {/* ENCABEZADO EDITORIAL - SIN LÍNEAS NI BORDES */}
+        <header className="skills-header mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div>
-            <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest mb-3">
-              <span className="w-8 h-px bg-red-500 inline-block" />
+            <div className="flex items-center gap-2.5 text-red-500 font-mono text-xs uppercase tracking-widest mb-3">
+              <span className="w-2 h-2 rounded-full bg-red-500 inline-block shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
               <span>[ 03 · HABILIDADES & TECNOLOGÍAS ]</span>
             </div>
             <h2
@@ -79,7 +89,7 @@ export default function Skills() {
         </header>
 
         {/* SELECTOR DE PESTAÑAS EDITORIAL (TABS DE ALTA GAMA) */}
-        <div className="skills-tabs flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 md:gap-4 mb-8 md:mb-10 border-b border-white/10 pb-6">
+        <div className="skills-tabs flex flex-col sm:flex-row items-stretch sm:items-center justify-start gap-3 md:gap-4 mb-8 md:mb-10">
           <button
             type="button"
             onClick={() => handleTabChange('hard')}
@@ -114,7 +124,7 @@ export default function Skills() {
         </div>
 
         {/* LISTADO EDITORIAL ABIERTO CON HOVER REVEAL (SIN SIMPLES CARDS) */}
-        <div className="skills-list divide-y divide-white/10 border-b border-white/10">
+        <div className="skills-list divide-y divide-white/5">
           {currentList.map((item) => (
             <div
               key={item.index + item.title}

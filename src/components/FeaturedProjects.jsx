@@ -1,240 +1,286 @@
-import { useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { projects } from '../data/projects';
-import { ArrowUpRight, ExternalLink } from 'lucide-react';
-import { GithubIcon } from './Icons';
-import { useScrollReveal } from '../hooks/useScrollReveal';
+import studioBg from '../assets/studio_background.webp';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-export default function FeaturedProjects() {
-  const [activeProject, setActiveProject] = useState(null);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
-  const containerRef = useScrollReveal([
-    {
-      trigger: '.projects-header',
-      selector: '.projects-header > *',
-      duration: 0.85,
-      stagger: 0.12,
-      y: 35
-    },
-    {
-      selector: '.project-line',
-      individual: true,
-      scaleX: true,
-      duration: 0.9,
-      ease: 'power2.out'
-    },
-    {
-      selector: '.project-row',
-      individual: true,
-      duration: 0.8,
-      y: 30,
-      scale: 0.99
-    },
-    {
-      trigger: '.projects-footer',
-      selector: '.projects-footer',
-      duration: 0.8,
-      y: 20
-    }
-  ]);
+export default function FeaturedProjects({ containerRef }) {
+  const localRef = useRef(null);
+  const sectionRef = containerRef || localRef;
+  const cardsRef = useRef([]);
 
-  const handleMouseMove = (e) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    // Coordenadas relativas al contenedor de proyectos
-    setCursorPos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-  };
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const ctx = gsap.context(() => {
+      const cards = cardsRef.current.filter(Boolean);
+      if (!cards.length) return;
+
+      // 1. Entrada suave del encabezado al llegar a la sección
+      gsap.fromTo(
+        '.projects-header-item',
+        { opacity: 0, y: 25 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: 'power2.out',
+          clearProps: 'all',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          }
+        }
+      );
+
+      // 2. Estado inicial de las tarjetas:
+      // Card 0 visible y en reposo (yPercent: 0, scale: 1).
+      // Card 1 y 2 preparadas completamente abajo fuera del viewport (yPercent: 160)
+      cards.forEach((card, i) => {
+        gsap.set(card, {
+          yPercent: i === 0 ? 0 : 160,
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          filter: 'none',
+          transformOrigin: '50% 0%',
+        });
+      });
+
+      // 2.1 Elevación Flotante (Float-in 3D) de la Card 01 mientras la lámina blanca de Proyectos entra
+      if (cards[0]) {
+        gsap.fromTo(
+          cards[0],
+          { y: 35, scale: 0.97, opacity: 0.85 },
+          {
+            y: 0,
+            scale: 1.0,
+            opacity: 1.0,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top bottom',
+              end: 'top top',
+              scrub: true,
+              invalidateOnRefresh: true,
+            }
+          }
+        );
+      }
+
+      // 3. Suavizar esquinas superiores a 0px al clavarse (pin) en el tope de pantalla
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top 8%',
+        end: 'top top',
+        scrub: 0.5,
+        animation: gsap.to(sectionRef.current, {
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+          ease: 'none',
+        }),
+      });
+
+      // 4. Timeline de Pinning Cinemático con ScrollTrigger
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: () => `+=${window.innerHeight * (cards.length * 1.25 + 0.4)}`,
+          pin: true,
+          pinSpacing: true,
+          scrub: 0.85,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        }
+      });
+
+      const stepOffset = typeof window !== 'undefined' && window.innerWidth < 640 ? 14 : 20;
+
+      cards.forEach((card, i) => {
+        if (i === 0) {
+          // Pausa inicial para contemplar el Proyecto 1 (HEXA) con total nitidez y brillo
+          tl.to({}, { duration: 0.85 });
+          return;
+        }
+
+        const label = `step-${i}`;
+
+        // A) Las tarjetas anteriores se desplazan hacia arriba en cascada 3D visible, segura y armónica
+        for (let prev = 0; prev < i; prev++) {
+          const depthLevel = i - prev;
+          tl.to(
+            cards[prev],
+            {
+              scale: 1 - depthLevel * 0.035,
+              y: -depthLevel * stepOffset,
+              opacity: 1 - depthLevel * 0.07,
+              duration: 1.15,
+              ease: 'power2.inOut',
+            },
+            label
+          );
+        }
+
+        // B) La tarjeta entrante sube limpia, sólida y al 100% de brillo desde abajo hacia el frente
+        tl.to(
+          card,
+          {
+            yPercent: 0,
+            y: 0,
+            scale: 1,
+            opacity: 1,
+            duration: 1.15,
+            ease: 'power2.inOut',
+          },
+          label
+        );
+
+        // C) Pausa para contemplar el proyecto actual (pausa generosa en el último proyecto)
+        tl.to({}, { duration: i === cards.length - 1 ? 1.6 : 0.85 });
+      });
+
+      // D) Pausa final con las tarjetas apiladas en reposo
+      tl.to({}, { duration: 0.8 });
+
+    }, sectionRef);
+
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+
+    return () => {
+      clearTimeout(timer);
+      ctx.revert();
+    };
+  }, [sectionRef]);
 
   return (
     <section
       id="proyectos"
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
+      ref={sectionRef}
       aria-labelledby="projects-title"
-      className="relative min-h-screen bg-[#0c0c10] text-stone-100 py-12 md:py-16 px-6 md:px-12 overflow-hidden scroll-mt-0"
+      className="curtain-slab-panel relative z-30 w-full h-screen min-h-screen rounded-t-[40px] md:rounded-t-[56px] bg-[#f8f9fb] curtain-slab-light text-stone-900 overflow-hidden flex flex-col justify-between py-5 sm:py-6"
     >
-      {/* Luz ambiental sutil en el fondo */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-red-600/5 rounded-full blur-[140px] pointer-events-none" />
+      {/* FONDO DE ESTUDIO BLANCO COMO EN EL HERO + VELO DE VIDRIO ESMERILADO */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Imagen fotográfica de estudio del Hero */}
+        <img
+          src={studioBg}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover object-center opacity-65"
+        />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* ENCABEZADO EDITORIAL */}
-        <header className="projects-header mb-10 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/10">
-          <div>
-            <div className="flex items-center gap-3 text-red-500 font-mono text-xs uppercase tracking-widest mb-3">
-              <span className="w-8 h-px bg-red-500 inline-block" />
-              <span>[ 02 // CATÁLOGO ]</span>
-            </div>
-            <h2
-              id="projects-title"
-              className="text-4xl sm:text-5xl md:text-7xl font-black font-display tracking-tight text-white uppercase"
-            >
-              PROYECTOS<span className="text-red-500">.</span>
-            </h2>
-          </div>
+        {/* Capa difusora de vidrio esmerilado arquitectónico */}
+        <div className="absolute inset-0 bg-white/75 backdrop-blur-3xl" />
 
-          <p className="text-stone-400 font-mono text-xs md:text-sm max-w-sm uppercase tracking-wider">
-            UNA CURADURÍA DE ARQUITECTURA FRONTEND, RENDIMIENTO EXTREMO Y EXPERIENCIAS INTERACTIVAS.
-          </p>
-        </header>
-
-        {/* LISTA EDITORIAL INTERACTIVA */}
+        {/* Reflejos cáusticos y refracción sutil de luz */}
         <div
-          role="list"
-          className="projects-list border-b border-white/10"
-          onMouseLeave={() => setActiveProject(null)}
+          className="absolute inset-0 opacity-40 mix-blend-soft-light"
+          style={{
+            backgroundImage: `radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.9), transparent),
+                              radial-gradient(ellipse 60% 40% at 85% 60%, rgba(239, 68, 68, 0.08), transparent)`
+          }}
+        />
+
+        {/* Luces volumétricas sutiles de estudio */}
+        <div className="absolute top-1/4 left-1/4 w-[750px] h-[400px] bg-red-600/[0.035] rounded-full blur-[170px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[350px] bg-rose-500/[0.03] rounded-full blur-[150px]" />
+      </div>
+
+      {/* ENCABEZADO EDITORIAL COMPACTO */}
+      <header className="projects-header relative z-30 flex-shrink-0 pt-2 sm:pt-4 pb-1 text-center px-6">
+        <div className="projects-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 border border-stone-200/90 shadow-xs text-red-600 font-mono text-[11px] uppercase tracking-widest backdrop-blur-md mb-2">
+          <span className="w-2 h-2 rounded-full bg-red-600 inline-block shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse" />
+          <span>[ 02 // PROYECTOS SELECCIONADOS ]</span>
+        </div>
+        <h2
+          id="projects-title"
+          className="projects-header-item text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-stone-950 uppercase leading-none"
         >
-          {projects.map((project) => {
+          PROYECTOS<span className="text-red-600">.</span>
+        </h2>
+        <p className="projects-header-item text-stone-500 font-mono text-xs uppercase tracking-wider mt-1.5 font-medium">
+          Haz clic sobre cualquier proyecto para abrir la demo en vivo
+        </p>
+      </header>
+
+      {/* MAZO DE VENTANAS ESCULTURALES 3D SUPERPUESTAS */}
+      <div className="relative z-20 w-full max-w-5xl xl:max-w-6xl mx-auto flex-1 h-[60vh] sm:h-[64vh] md:h-[68vh] max-h-[640px] px-4 sm:px-6 flex items-center justify-center my-auto">
+        <div className="relative w-full h-full">
+          {projects.map((project, index) => {
             return (
-              <article
+              <a
                 key={project.id}
-                role="listitem"
-                onMouseEnter={() => setActiveProject(project)}
-                className="project-row group relative py-8 md:py-12 transition-all duration-300"
+                ref={(el) => (cardsRef.current[index] = el)}
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Abrir proyecto ${project.title} en vivo`}
+                className="project-sculptural-card absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl bg-[#18181b] border-t border-white/30 border-x border-b border-stone-800/80 shadow-[0_-10px_32px_rgba(0,0,0,0.35),0_30px_90px_rgba(0,0,0,0.35)] hover:shadow-[0_0_50px_rgba(239,68,68,0.3)] overflow-hidden cursor-pointer group flex flex-col will-change-transform transition-shadow duration-300"
+                style={{
+                  zIndex: (index + 1) * 10,
+                }}
               >
-                {/* LÍNEA DIVISORIA EDITORIAL DINÁMICA CON SCALE-X */}
-                <div
-                  className="project-line w-full h-px bg-gradient-to-r from-red-500/70 via-white/15 to-white/5 mb-8 origin-left"
-                  aria-hidden="true"
-                />
-
-                {/* FILA PRINCIPAL */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 cursor-pointer">
-                  {/* Número & Título con desplazamiento suave */}
-                  <div className="flex items-start sm:items-center gap-6 md:gap-10">
-                    <div className="overflow-hidden">
-                      <span className="font-mono text-xs sm:text-sm tracking-widest text-stone-500 group-hover:text-red-500 transition-colors inline-block pt-1 sm:pt-0">
-                        /{project.number}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl sm:text-3xl md:text-5xl font-extrabold font-display uppercase tracking-tight text-white group-hover:text-red-500 group-hover:translate-x-3 transition-all duration-300">
-                        {project.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-stone-400 font-mono mt-1 group-hover:text-stone-300 transition-colors">
-                        {project.category} // {project.year}
-                      </p>
-                    </div>
+                {/* 1. Barra superior escultural limpia (sin semáforos, sin botones en la derecha) */}
+                <div className="flex items-center justify-between px-5 sm:px-7 py-3 sm:py-3.5 bg-[#18181b] border-b border-white/10 backdrop-blur-md select-none flex-shrink-0">
+                  {/* Número de proyecto */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold text-red-500 tracking-wider">
+                      /{project.number}
+                    </span>
                   </div>
 
-                  {/* Etiquetas y Enlaces de acción */}
-                  <div className="flex flex-wrap items-center gap-4 lg:gap-8 justify-between lg:justify-end">
-                    <ul className="hidden sm:flex flex-wrap gap-2" aria-label="Tecnologías principales">
-                      {project.tags.map((tag) => (
-                        <li key={tag}>
-                          <span className="px-2.5 py-1 text-[11px] font-mono uppercase tracking-wider rounded-md bg-white/5 text-stone-300 border border-white/10 group-hover:border-red-500/30 transition-colors">
-                            {tag}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                  {/* Título Central & Categoría */}
+                  <div className="flex items-center gap-2 truncate px-2">
+                    <span className="font-display font-extrabold text-xs sm:text-sm md:text-base text-stone-100 uppercase tracking-tight truncate group-hover:text-red-400 transition-colors">
+                      {project.title}
+                    </span>
+                    <span className="hidden sm:inline-block text-[11px] font-mono text-stone-400 font-normal">
+                      · {project.category}
+                    </span>
+                  </div>
 
-                    {/* Botones de enlace directo */}
-                    <div className="flex items-center gap-3">
-                      <a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Ver demo en vivo de ${project.title}`}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/5 hover:bg-red-600 text-stone-200 hover:text-white border border-white/10 hover:border-red-500 text-xs font-mono tracking-wider uppercase transition-all duration-200"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span>Demo</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-
-                      <a
-                        href={project.repoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Ver repositorio de ${project.title}`}
-                        className="p-2 rounded-full bg-white/5 hover:bg-white/15 text-stone-300 hover:text-white border border-white/10 transition-colors"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <GithubIcon className="w-4 h-4" />
-                      </a>
-
-                      <div className="w-10 h-10 rounded-full border border-white/15 flex items-center justify-center text-stone-400 group-hover:text-white group-hover:border-red-500 group-hover:bg-red-600 group-hover:rotate-45 transition-all duration-300">
-                        <ArrowUpRight className="w-4 h-4" />
-                      </div>
-                    </div>
+                  {/* Indicador sutil de año (sin botones) */}
+                  <div className="flex items-center">
+                    <span className="font-mono text-xs text-stone-400 font-medium">
+                      {project.year}
+                    </span>
                   </div>
                 </div>
 
-                {/* VISTA PREVIA INTEGRADA EN MÓVIL / PANTALLAS PEQUEÑAS (< lg) */}
-                <div className="mt-6 lg:hidden space-y-4">
-                  <figure className="aspect-video w-full rounded-xl overflow-hidden border border-white/10 bg-stone-900 group/img">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 ease-out"
-                    />
-                  </figure>
-                  <p className="text-stone-400 text-xs sm:text-sm leading-relaxed">
-                    {project.description}
-                  </p>
+                {/* 2. Cuerpo de la ventana: Captura al 100% de brillo nativo (sin botones abajo a la derecha) */}
+                <div className="relative flex-1 w-full h-full bg-stone-900 overflow-hidden">
+                  <img
+                    src={project.image}
+                    alt={`Captura del proyecto ${project.title}`}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover object-top filter brightness-100 group-hover:brightness-105 group-hover:scale-[1.015] transition-all duration-500 ease-out"
+                  />
+
+                  {/* Reflejo especular diagonal sutil de cristal */}
+                  <div
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/15 via-white/[0.02] to-transparent opacity-80"
+                    aria-hidden="true"
+                  />
                 </div>
-              </article>
+              </a>
             );
           })}
         </div>
-
-        {/* FOOTER DE SECCIÓN / GITHUB EXPLORER */}
-        <div className="projects-footer mt-10 md:mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs text-stone-400">
-          <span className="tracking-widest uppercase">
-            [ MÁS PROYECTOS Y EXPERIMENTOS DISPONIBLES EN GITHUB ]
-          </span>
-          <a
-            href="https://github.com/Facuelpillo08"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-stone-200 hover:text-red-400 font-bold uppercase tracking-wider transition-colors"
-          >
-            <span>Ver perfil completo en GitHub</span>
-            <ArrowUpRight className="w-4 h-4" />
-          </a>
-        </div>
       </div>
 
-      {/* ELEMENTO FLOTANTE DE VISTA PREVIA (DESKTOP: LOCOMOTIVE / AWWWARDS FLOATING PREVIEW) */}
-      {activeProject && (
-        <aside
-          aria-hidden="true"
-          className="hidden lg:block pointer-events-none absolute z-40 transition-transform duration-100 ease-out"
-          style={{
-            left: `${cursorPos.x}px`,
-            top: `${cursorPos.y}px`,
-            transform: 'translate(-50%, -50%)',
-            willChange: 'transform'
-          }}
-        >
-          <div className="w-80 rounded-2xl overflow-hidden bg-stone-900/95 border border-white/20 shadow-2xl p-3 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
-            <figure className="relative aspect-video rounded-xl overflow-hidden bg-black mb-3 border border-white/10">
-              <img
-                src={activeProject.image}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                width="320"
-                height="180"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <span className="absolute bottom-2 left-2 text-[10px] font-mono tracking-widest text-red-400 font-bold uppercase bg-black/60 px-2 py-0.5 rounded">
-                // {activeProject.category}
-              </span>
-            </figure>
-            <p className="text-stone-300 text-xs line-clamp-2 leading-relaxed px-1 font-sans">
-              {activeProject.description}
-            </p>
-          </div>
-        </aside>
-      )}
+      {/* Espaciador sutil inferior */}
+      <div className="relative z-10 h-3 flex-shrink-0" />
     </section>
   );
 }
-

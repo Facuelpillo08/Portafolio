@@ -1,43 +1,42 @@
-import ecommerceImg from '../assets/projects/ecommerce.webp';
-import taskflowImg from '../assets/projects/taskflow.webp';
-import weatherImg from '../assets/projects/weather.webp';
+import hexaImg from '../assets/projects/hexa.webp';
+import kntxImg from '../assets/projects/kntx.webp';
+import vandalImg from '../assets/projects/vandal.webp';
 
 export const projects = [
   {
-    id: 'e-commerce-dashboard',
+    id: 'hexa-custom',
     number: '01',
-    year: '2025',
-    title: 'E-commerce Admin Analytics',
-    category: 'Arquitectura Frontend / SaaS',
-    description: 'Panel de administración integral con analíticas en tiempo real, gestión de productos, inventario y métricas de conversión optimizadas.',
-    tags: ['React', 'JavaScript', 'Tailwind CSS', 'REST API'],
-    demoUrl: 'https://ejemplo-ecommerce.com',
-    repoUrl: 'https://github.com/Facuelpillo08/ecommerce-dashboard',
-    image: ecommerceImg
+    year: '2026',
+    title: 'HEXA // CUSTOM',
+    category: 'Configurador 3D / Hardware Modular',
+    description: 'Personalizador 3D interactivo en tiempo real para el teclado mecánico modular KX-75 en aluminio CNC 6063. Selector de switches mecánicos, pruebas acústicas y arquitectura de ensamblado gasket mount.',
+    tags: ['Three.js', 'React', 'WebGL', '3D Configurator'],
+    demoUrl: 'https://hexa-ten-fawn.vercel.app/',
+    repoUrl: 'https://github.com/Facuelpillo08/hexa',
+    image: hexaImg
   },
   {
-    id: 'task-flow-app',
+    id: 'kntx-lab',
     number: '02',
     year: '2025',
-    title: 'TaskFlow Workspace',
-    category: 'Productividad & Workflow',
-    description: 'Aplicación para productividad y gestión de proyectos colaborativos con soporte para drag and drop, persistencia local y filtros avanzados.',
-    tags: ['React', 'Context API', 'Local Storage', 'HTML5'],
-    demoUrl: 'https://ejemplo-taskflow.com',
-    repoUrl: 'https://github.com/Facuelpillo08/taskflow-app',
-    image: taskflowImg
+    title: 'KNTX LAB',
+    category: 'E-commerce / Moda Técnica Urbana',
+    description: 'E-commerce y catálogo interactivo de indumentaria técnica urbana (DROP 004). Incluye selector y calculadora dinámica de talles, filtrado reactivo de prendas y carrito interactivo.',
+    tags: ['React', 'Tailwind CSS', 'E-Commerce', 'UI/UX Design'],
+    demoUrl: 'https://kntx-chi.vercel.app/',
+    repoUrl: 'https://github.com/Facuelpillo08/KNTX',
+    image: kntxImg
   },
   {
-    id: 'weather-analytics',
+    id: 'vandal-club',
     number: '03',
-    year: '2024',
-    title: 'Aether Climate Telemetry',
-    category: 'Web APIs / Visualización',
-    description: 'Plataforma web para consulta de pronósticos climáticos con geolocalización, gráficos interactivos de temperatura y telemetría atmosférica.',
-    tags: ['React', 'Fetch API', 'Web APIs', 'JavaScript'],
-    demoUrl: 'https://ejemplo-clima.com',
-    repoUrl: 'https://github.com/Facuelpillo08/weather-analytics',
-    image: weatherImg
+    year: '2026',
+    title: 'VANDAL // CLUB',
+    category: 'Barbería de Autor & Tatuajes',
+    description: 'Estudio híbrido de barbería y arte permanente. Plataforma web inmersiva de alto impacto visual con diseño editorial oscuro, cotizador online, agenda de turnos y archivo de obras.',
+    tags: ['React', 'Tailwind CSS', 'Dark Aesthetic', 'Branding'],
+    demoUrl: 'https://vandal-khaki.vercel.app/',
+    repoUrl: 'https://github.com/Facuelpillo08/vandal',
+    image: vandalImg
   }
 ];
-

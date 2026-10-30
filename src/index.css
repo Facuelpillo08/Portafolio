@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 @theme {
   --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -6,10 +7,35 @@
 }
 
 html {
-  scroll-behavior: smooth;
   font-family: var(--font-sans);
   background-color: #0c0c10;
   color: #171717;
+  scroll-behavior: auto;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  background-color: #0c0c10;
+}
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 /* Clases de utilidad para perspectiva 3D */
@@ -24,6 +50,23 @@ html {
 
 .backface-hidden {
   backface-visibility: hidden;
+}
+
+/* Animación de pulso y destello focal suave para navegación (sin bordes ni líneas) */
+@keyframes sectionFocalPulse {
+  0% {
+    filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.25));
+  }
+  50% {
+    filter: drop-shadow(0 0 70px rgba(239, 68, 68, 0.4));
+  }
+  100% {
+    filter: none;
+  }
+}
+
+.section-focal-flash {
+  animation: sectionFocalPulse 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Tipografía Normal: Rojo Escultórico Original (Estado de Reposo) */
@@ -96,11 +139,6 @@ html {
   filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.7)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.8));
 }
 
-
-
-
-
-
 /* Marquee / Cinta infinita editorial */
 @keyframes marquee {
   0% {
@@ -139,6 +177,50 @@ html {
   animation-play-state: paused;
 }
 
+/* =========================================================================
+   AWWWARDS CURTAIN REVEAL 3D (LÁMINAS FLOTANTES ESCULPIDAS)
+   ========================================================================= */
 
+.curtain-slab-panel {
+  position: relative;
+  width: 100%;
+}
 
+/* El espaciador de pinning es transparente por defecto para no romper el fondo oscuro */
+.pin-spacer {
+  background-color: transparent !important;
+}
 
+/* Sombra de lujo y borde superior para láminas oscuras (#0c0c10) */
+.curtain-slab-dark {
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 -35px 100px -15px rgba(0, 0, 0, 0.85);
+}
+
+/* Sombra de lujo y borde superior para láminas claras (#f8f9fb) */
+.curtain-slab-light {
+  border-top: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 -35px 90px rgba(0, 0, 0, 0.55), 0 -12px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* =========================================================================
+   NAVEGACIÓN DE SECCIONES (DOCK LATERAL Y BARRA INFERIOR)
+   ========================================================================= */
+
+@media (min-width: 1360px) {
+  .nav-dock-desktop {
+    display: flex !important;
+  }
+  .nav-bar-mobile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1359.98px) {
+  .nav-dock-desktop {
+    display: none !important;
+  }
+  .nav-bar-mobile {
+    display: flex !important;
+  }
+}
