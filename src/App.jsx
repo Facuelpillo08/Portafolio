@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -116,13 +116,13 @@ function PortfolioPage() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <SmoothScrollProvider>
         <Routes>
           <Route path="/" element={<PortfolioPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </SmoothScrollProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
