@@ -37,7 +37,7 @@ export function SmoothScrollProvider({ children }) {
     };
 
     gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     const refreshTimer = setTimeout(() => {
       ScrollTrigger.refresh();

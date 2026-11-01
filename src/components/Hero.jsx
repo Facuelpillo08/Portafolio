@@ -17,153 +17,121 @@ export default function Hero() {
   const currentMouse = useRef({ x: 0, y: 0 });
   const isTouching = useRef(false);
   const scrollYRef = useRef(0);
+  const isIntroComplete = useRef(false);
 
-  // 1. ENTRADA CINEMATOGRÁFICA PERSONALIZADA:
-  // Silueta primero -> Letras se arman con efecto metálico cromo -> Destello final -> VUELVE A LA NORMALIDAD
+  // 1. ENTRADA CINEMATOGRÁFICA PERSONALIZADA (100% GPU / COMPOSITE-ONLY)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        defaults: { force3D: true }
+        defaults: { force3D: true },
+        onComplete: () => {
+          isIntroComplete.current = true;
+        }
       });
 
-      // 1. Fondo de estudio: atmósfera limpia y sobria
+      // 1. Fondo de estudio: fundido suave inmediato
       tl.fromTo(
         bgRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.45, ease: 'power2.out' },
+        { opacity: 1, duration: 0.5, ease: 'power2.out' },
         0
       );
 
-      // 2. PRIMERO LA SILUETA: Emerge con presencia protagónica en el set
+      // 2. PRIMERO LA SILUETA: Emerge con presencia protagónica
       tl.fromTo(
         '.hero-silhouette',
-        { opacity: 0, y: 35, scale: 0.97 },
+        { opacity: 0, y: 30, scale: 0.98 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.55,
+          duration: 0.6,
           ease: 'power3.out',
           clearProps: 'transform,opacity'
         },
-        0.04
+        0.05
       );
 
-      // 3. ENTRAN LAS LETRAS: Se van armando con el efecto METÁLICO CROMO activo
-      // Durante el ensamblado, la capa metálica (.hero-char-metallic) tiene opacity: 1
+      // 3. ENTRAN LAS LETRAS: Se arman con el efecto cromo activo (GPU-accelerated)
       tl.fromTo(
         '.hero-char',
-        {
-          opacity: 0,
-          y: -26,
-          scale: 1.15
-        },
+        { opacity: 0, y: -24, scale: 1.1 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.32,
-          stagger: 0.035,
-          ease: 'power3.out',
+          duration: 0.36,
+          stagger: 0.028,
+          ease: 'power2.out',
           clearProps: 'transform,opacity'
         },
-        0.44
+        0.42
       );
 
-      // 4. AL FINAL DEL ARMADO DE LAS LETRAS: DESTELLO METÁLICO (a los 0.95s)
-      // A) Destello de sobrecarga en los biseles de la capa metálica
-      tl.to(
-        '.hero-char-metallic',
-        {
-          filter: 'brightness(2.6) contrast(1.6)',
-          duration: 0.08,
-          ease: 'power2.in'
-        },
-        0.95
-      );
-
-      // B) Haz de destello cromo que cruza horizontalmente las letras a gran velocidad
+      // 4. DESTELLO METÁLICO CROMO (a los 0.90s): El haz cruza a toda velocidad
       tl.fromTo(
         '.hero-destello-beam',
         { xPercent: -130, opacity: 0 },
         { opacity: 1, duration: 0.04 },
-        0.95
+        0.90
       );
       tl.to(
         '.hero-destello-beam',
-        {
-          xPercent: 240,
-          duration: 0.42,
-          ease: 'power2.inOut'
-        },
-        0.95
+        { xPercent: 250, duration: 0.42, ease: 'power2.inOut' },
+        0.90
       );
       tl.to(
         '.hero-destello-beam',
-        { opacity: 0, duration: 0.12 },
-        1.25
+        { opacity: 0, duration: 0.1 },
+        1.22
       );
 
-      // 5. VUELVE A LA NORMALIDAD:
-      // La capa metálica se desvanece suavemente tras el destello, revelando el rojo limpio original
+      // 5. VUELVE A LA NORMALIDAD: La capa metálica se desvanece suavemente
+      // revelando el rojo esculpido original con transición 100% en opacidad GPU
       tl.to(
         '.hero-char-metallic',
         {
           opacity: 0,
-          filter: 'brightness(1) contrast(1)',
-          duration: 0.55,
+          duration: 0.5,
           ease: 'power2.out'
         },
         1.05
       );
 
-      // 6. "DESARROLLADOR WEB" en la capa frontal (entra metálico, da destello y vuelve a la normalidad)
+      // 6. "DESARROLLADOR WEB" en la capa frontal
       tl.fromTo(
         '.hero-front-char',
-        {
-          opacity: 0,
-          y: 16,
-          scale: 0.88
-        },
+        { opacity: 0, y: 14, scale: 0.9 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.26,
-          stagger: 0.018,
+          duration: 0.28,
+          stagger: 0.016,
           ease: 'power2.out',
           clearProps: 'transform,opacity'
         },
-        1.18
+        1.15
       );
 
       // Destello frontal
-      tl.to(
-        '.hero-front-char-metallic',
-        {
-          filter: 'brightness(2.4) contrast(1.5)',
-          duration: 0.06,
-          ease: 'power2.in'
-        },
-        1.48
-      );
       tl.fromTo(
         '.hero-front-destello',
         { xPercent: -120, opacity: 0 },
         { opacity: 1, duration: 0.04 },
-        1.48
+        1.44
       );
       tl.to(
         '.hero-front-destello',
-        { xPercent: 230, duration: 0.35, ease: 'power2.inOut' },
-        1.48
+        { xPercent: 240, duration: 0.35, ease: 'power2.inOut' },
+        1.44
       );
       tl.to(
         '.hero-front-destello',
-        { opacity: 0, duration: 0.1 },
-        1.72
+        { opacity: 0, duration: 0.08 },
+        1.70
       );
 
       // Vuelve a la normalidad el subtítulo
@@ -171,11 +139,10 @@ export default function Hero() {
         '.hero-front-char-metallic',
         {
           opacity: 0,
-          filter: 'brightness(1) contrast(1)',
           duration: 0.45,
           ease: 'power2.out'
         },
-        1.54
+        1.50
       );
 
       // 7. Enlaces editoriales en las esquinas
@@ -190,7 +157,7 @@ export default function Hero() {
           ease: 'power2.out',
           clearProps: 'all'
         },
-        1.70
+        1.65
       );
     }, containerRef);
 
@@ -214,9 +181,11 @@ export default function Hero() {
     let lastMy = -999;
     let lastScrollY = -999;
 
-    const updatePhysics = () => {
-      const isMobile = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+    // Cache DOM queries fuera del loop
+    const corners = containerRef.current?.querySelectorAll('.hero-corner');
+    const isMobile = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
 
+    const updatePhysics = () => {
       // En móviles sin interacción táctil activa: oscilación pendular natural (~4s por ciclo)
       if (isMobile && !isTouching.current) {
         const time = performance.now() * 0.001;
@@ -249,63 +218,51 @@ export default function Hero() {
         const shiftX = mx * 26;
         const shiftY = my * 18;
 
-        // ENFOQUE ÓPTICO UNIFICADO (DEPTH OF FIELD & DISOLUCIÓN A NEGRO)
-        // Progresivo y suave durante el 0% a 85% del recorrido hacia el Manifiesto
+        // ENFOQUE ÓPTICO UNIFICADO (100% GPU COMPOSITE-ONLY CON OPACITY & TRANSFORMS)
         const heroProgress = Math.min(1, Math.max(0, scrollY / (window.innerHeight * 0.95)));
         const opticalFadeProgress = Math.min(1, heroProgress / 0.85);
 
-        // Desenfoque óptico progresivo de lente (0px a 14px)
-        const opticalBlur = (opticalFadeProgress * 14).toFixed(1);
-        const blurFilter = Number(opticalBlur) > 0.2 ? `blur(${opticalBlur}px)` : 'none';
-
-        // Disolución suave y gradual hacia el negro de estudio (#0c0c10)
+        // Opacidad progresiva hacia el negro de estudio (#0c0c10)
         const sceneOpacity = Math.max(0, 1 - Math.pow(opticalFadeProgress, 1.25)).toFixed(3);
 
-        // Capa delantera "DESARROLLADOR WEB": Se desvanece de forma anticipada y desciende suave
+        // Capa delantera "DESARROLLADOR WEB"
         const frontOpacity = Math.max(0, 1 - heroProgress * 2.8).toFixed(3);
         const frontShiftY = heroProgress * 60;
-        const frontBlur = Number(opticalBlur) > 0.3 ? `blur(${(opticalBlur * 0.7).toFixed(1)}px)` : 'none';
 
-        // Enlaces de las 4 esquinas: Se desvanecen al iniciar el avance
+        // Esquinas
         const cornerOpacity = Math.max(0, 1 - heroProgress * 3.8).toFixed(3);
 
-        // Fondo de estudio: Se funde hacia el negro puro de estudio (#0c0c10)
+        // Fondo
         const bgOpacity = Math.max(0, 1 - heroProgress * 1.35).toFixed(3);
-        const bgBlur = Number(opticalBlur) > 0.4 ? `blur(${(opticalBlur * 0.5).toFixed(1)}px)` : 'none';
 
-        // A) "FACUNDO ACOSTA" en capa trasera: Parallax sutil sin zoom invasivo (escala natural 1.0)
+        // A) "FACUNDO ACOSTA"
         if (backTitleRef.current) {
           const backY = shiftY * 0.85 - scrollY * 0.22;
           backTitleRef.current.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translate3d(${(shiftX * 0.85).toFixed(1)}px, ${backY.toFixed(1)}px, 0px)`;
           backTitleRef.current.style.opacity = sceneOpacity;
-          backTitleRef.current.style.filter = blurFilter;
         }
 
-        // B) Silueta central de Facundo: Parallax sutil y desenfoque óptico unificado en escala natural (1.0)
+        // B) Silueta
         if (silhouetteContainerRef.current) {
           const silY = -scrollY * 0.16;
           silhouetteContainerRef.current.style.transform = `perspective(1000px) translate3d(0px, ${silY.toFixed(1)}px, 0px)`;
           silhouetteContainerRef.current.style.opacity = sceneOpacity;
-          silhouetteContainerRef.current.style.filter = blurFilter;
         }
 
-        // C) "DESARROLLADOR WEB" en capa delantera
+        // C) "DESARROLLADOR WEB"
         if (frontTitleRef.current) {
           const frontY = -shiftY * 0.55 + frontShiftY;
           frontTitleRef.current.style.transform = `perspective(1000px) rotateX(${(tiltX * 0.5).toFixed(2)}deg) rotateY(${(tiltY * 0.5).toFixed(2)}deg) translate3d(${(-shiftX * 0.55).toFixed(1)}px, ${frontY.toFixed(1)}px, 0px)`;
           frontTitleRef.current.style.opacity = frontOpacity;
-          frontTitleRef.current.style.filter = frontBlur;
         }
 
         // D) Fondo de estudio
         if (bgRef.current) {
           bgRef.current.style.transform = `translate3d(0px, ${(scrollY * 0.12).toFixed(1)}px, 0px)`;
           bgRef.current.style.opacity = bgOpacity;
-          bgRef.current.style.filter = bgBlur;
         }
 
         // E) Esquinas del hero
-        const corners = containerRef.current?.querySelectorAll('.hero-corner');
         if (corners) {
           corners.forEach((corner) => {
             corner.style.opacity = cornerOpacity;
@@ -380,7 +337,7 @@ export default function Hero() {
         {/* 1. FONDO DE ESTUDIO FOTOGRÁFICO EN CAPA INDEPENDIENTE (z-0) */}
         <div
           ref={bgRef}
-          className="absolute inset-0 z-0 pointer-events-none will-change-transform"
+          className="absolute inset-0 z-0 pointer-events-none will-change-[transform,opacity]"
           style={{
             transform: 'translate3d(0px, 0px, 0px)'
           }}
@@ -404,7 +361,7 @@ export default function Hero() {
           }}
         />
 
-        {/* 3. FUSIÓN ATMOSFÉRICA SUAVE (z-5) - Fusión continua sin líneas ni crestas con el Manifiesto */}
+        {/* 3. FUSIÓN ATMOSFÉRICA SUAVE (z-5) */}
         <div
           className="absolute inset-x-0 -bottom-1 h-[58vh] pointer-events-none z-5"
           style={{
@@ -413,50 +370,58 @@ export default function Hero() {
           aria-hidden="true"
         />
 
-        {/* 4. CAPA TRASERA: "FACUNDO ACOSTA" (z-10) - Detrás de la silueta, delante del fondo */}
+        {/* 4. CAPA TRASERA: "FACUNDO ACOSTA" (z-10) */}
         <div
           ref={backTitleRef}
-          className="hero-back-title absolute top-[20%] md:top-[16%] left-0 right-0 z-10 flex justify-center items-center pointer-events-none will-change-[transform,opacity,filter]"
+          className="hero-back-title absolute top-[20%] md:top-[16%] left-0 right-0 z-10 flex justify-center items-center pointer-events-none will-change-[transform,opacity]"
           style={{
             transform: 'translate3d(0px, 0px, 0px)'
           }}
         >
-          {/* Rayo de destello metálico cromo que barre las letras */}
+          {/* Rayo de destello metálico cromo (GPU Hardware Blend Mode) */}
           <div
-            className="hero-destello-beam absolute top-1/2 left-0 w-44 sm:w-64 md:w-80 h-[220%] -translate-y-1/2 -skew-x-25 pointer-events-none opacity-0 z-30 flex items-center justify-center will-change-[transform,opacity]"
+            className="hero-destello-beam absolute top-1/2 left-0 w-52 sm:w-72 md:w-96 h-[240%] -translate-y-1/2 -skew-x-25 pointer-events-none opacity-0 z-30 flex items-center justify-center will-change-[transform,opacity]"
             style={{
-              mixBlendMode: 'screen',
-              filter: 'drop-shadow(0 0 20px rgba(255,255,255,1)) drop-shadow(0 0 50px rgba(255,100,120,0.8))'
+              mixBlendMode: 'screen'
             }}
             aria-hidden="true"
           >
             <div
               className="w-full h-full"
               style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 20%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.1) 80%, transparent 100%)'
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 20%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.15) 80%, transparent 100%)'
               }}
             />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 md:w-14 md:h-14 bg-white rounded-full blur-[1px] shadow-[0_0_35px_18px_#ffffff,0_0_70px_35px_rgba(255,60,90,0.8)]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] sm:w-[480px] md:w-[700px] h-1 md:h-1.5 bg-white blur-[0.5px] shadow-[0_0_18px_5px_#ffffff,0_0_35px_10px_rgba(255,80,100,0.7)]" />
+            {/* Núcleo de alta luminiscencia */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 md:w-24 md:h-24 rounded-full pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,200,220,0.8) 30%, rgba(239,68,68,0.4) 60%, transparent 80%)'
+              }}
+            />
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] md:w-[750px] h-2 md:h-2.5 pointer-events-none"
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 30%, #ffffff 50%, rgba(255,255,255,0.9) 70%, transparent 100%)'
+              }}
+            />
           </div>
 
           <h1
-            className="hero-back-text text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase text-center leading-none px-4 select-none tracking-tight flex justify-center items-center flex-wrap gap-x-4 sm:gap-x-6 md:gap-x-10"
+            className="hero-back-text drop-shadow-[0_12px_32px_rgba(220,38,38,0.35)] text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase text-center leading-none px-4 select-none tracking-tight flex justify-center items-center flex-wrap gap-x-4 sm:gap-x-6 md:gap-x-10"
             aria-label="FACUNDO ACOSTA"
           >
             <span className="inline-flex whitespace-nowrap">
               {"FACUNDO".split('').map((char, i) => (
                 <span
                   key={`fn-${i}`}
-                  className="hero-char relative inline-block will-change-[transform,opacity]"
+                  className="hero-char relative inline-block will-change-transform"
                 >
-                  {/* Capa de estado normal: Rojo esculpido original */}
                   <span className="hero-char-normal inline-block text-metallic-red-back">
                     {char}
                   </span>
-                  {/* Capa de efecto metálico cromo: Activa SOLO durante la entrada y destello */}
                   <span
-                    className="hero-char-metallic absolute inset-0 inline-block text-metallic-chrome pointer-events-none select-none will-change-[opacity,filter]"
+                    className="hero-char-metallic absolute inset-0 inline-block text-metallic-chrome pointer-events-none select-none will-change-opacity"
                     aria-hidden="true"
                   >
                     {char}
@@ -468,15 +433,13 @@ export default function Hero() {
               {"ACOSTA".split('').map((char, i) => (
                 <span
                   key={`ln-${i}`}
-                  className="hero-char relative inline-block will-change-[transform,opacity]"
+                  className="hero-char relative inline-block will-change-transform"
                 >
-                  {/* Capa de estado normal: Rojo esculpido original */}
                   <span className="hero-char-normal inline-block text-metallic-red-back">
                     {char}
                   </span>
-                  {/* Capa de efecto metálico cromo: Activa SOLO durante la entrada y destello */}
                   <span
-                    className="hero-char-metallic absolute inset-0 inline-block text-metallic-chrome pointer-events-none select-none will-change-[opacity,filter]"
+                    className="hero-char-metallic absolute inset-0 inline-block text-metallic-chrome pointer-events-none select-none will-change-opacity"
                     aria-hidden="true"
                   >
                     {char}
@@ -487,10 +450,10 @@ export default function Hero() {
           </h1>
         </div>
 
-        {/* 5. SILUETA ÚNICA DE FACUNDO (z-20) - Capa GPU dedicada, inamovible, 100% visible siempre */}
+        {/* 5. SILUETA ÚNICA DE FACUNDO (z-20) */}
         <div
           ref={silhouetteContainerRef}
-          className="hero-silhouette-container absolute inset-0 z-20 flex items-end justify-center pointer-events-none pb-0 will-change-[transform,opacity,filter]"
+          className="hero-silhouette-container absolute inset-0 z-20 flex items-end justify-center pointer-events-none pb-0 will-change-[transform,opacity]"
           style={{
             transform: 'translateZ(0)',
             backfaceVisibility: 'hidden',
@@ -516,48 +479,57 @@ export default function Hero() {
           />
         </div>
 
-        {/* 6. CAPA FRONTAL: "DESARROLLADOR WEB" (z-30) - Delante de la silueta */}
+        {/* 6. CAPA FRONTAL: "DESARROLLADOR WEB" (z-30) */}
         <div
           ref={frontTitleRef}
-          className="hero-front-title absolute bottom-[28%] md:bottom-[23%] left-0 right-0 z-30 flex justify-center items-center pointer-events-none will-change-transform"
+          className="hero-front-title absolute bottom-[28%] md:bottom-[23%] left-0 right-0 z-30 flex justify-center items-center pointer-events-none will-change-[transform,opacity]"
           style={{
             transform: 'translate3d(0px, 0px, 0px)'
           }}
         >
           {/* Micro destello frontal metálico */}
           <div
-            className="hero-front-destello absolute top-1/2 left-0 w-32 md:w-56 h-[180%] -translate-y-1/2 -skew-x-20 pointer-events-none opacity-0 z-35 flex items-center justify-center will-change-[transform,opacity]"
+            className="hero-front-destello absolute top-1/2 left-0 w-36 md:w-64 h-[200%] -translate-y-1/2 -skew-x-20 pointer-events-none opacity-0 z-35 flex items-center justify-center will-change-[transform,opacity]"
             style={{
-              mixBlendMode: 'screen',
-              filter: 'drop-shadow(0 0 15px rgba(255,255,255,1)) drop-shadow(0 0 35px rgba(255,100,120,0.7))'
+              mixBlendMode: 'screen'
             }}
             aria-hidden="true"
           >
             <div
               className="w-full h-full"
               style={{
-                background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 20%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.1) 80%, transparent 100%)'
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 20%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.15) 80%, transparent 100%)'
               }}
             />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 md:w-10 md:h-10 bg-white rounded-full blur-[1px] shadow-[0_0_25px_12px_#ffffff,0_0_50px_25px_rgba(255,60,90,0.8)]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] md:w-[400px] h-1 bg-white blur-[0.5px] shadow-[0_0_15px_4px_#ffffff,0_0_30px_8px_rgba(255,80,100,0.7)]" />
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 rounded-full pointer-events-none"
+              style={{
+                background: 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,200,220,0.8) 30%, rgba(239,68,68,0.4) 60%, transparent 80%)'
+              }}
+            />
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] md:w-[420px] h-1.5 pointer-events-none"
+              style={{
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 30%, #ffffff 50%, rgba(255,255,255,0.9) 70%, transparent 100%)'
+              }}
+            />
           </div>
 
           <div
-            className="hero-front-text text-lg sm:text-2xl md:text-3xl lg:text-5xl font-black tracking-[0.18em] sm:tracking-[0.26em] uppercase text-center leading-none px-4 select-none flex justify-center items-center flex-wrap gap-x-3 sm:gap-x-4 md:gap-x-6"
+            className="hero-front-text drop-shadow-[0_8px_20px_rgba(225,29,72,0.4)] text-lg sm:text-2xl md:text-3xl lg:text-5xl font-black tracking-[0.18em] sm:tracking-[0.26em] uppercase text-center leading-none px-4 select-none flex justify-center items-center flex-wrap gap-x-3 sm:gap-x-4 md:gap-x-6"
             aria-label="DESARROLLADOR WEB"
           >
             <span className="inline-flex whitespace-nowrap">
               {"DESARROLLADOR".split('').map((char, i) => (
                 <span
                   key={`sub1-${i}`}
-                  className="hero-front-char relative inline-block will-change-[transform,opacity]"
+                  className="hero-front-char relative inline-block will-change-transform"
                 >
                   <span className="hero-front-normal inline-block text-metallic-red-front">
                     {char}
                   </span>
                   <span
-                    className="hero-front-char-metallic absolute inset-0 inline-block text-metallic-front-chrome pointer-events-none select-none will-change-[opacity,filter]"
+                    className="hero-front-char-metallic absolute inset-0 inline-block text-metallic-front-chrome pointer-events-none select-none will-change-opacity"
                     aria-hidden="true"
                   >
                     {char}
@@ -569,13 +541,13 @@ export default function Hero() {
               {"WEB".split('').map((char, i) => (
                 <span
                   key={`sub2-${i}`}
-                  className="hero-front-char relative inline-block will-change-[transform,opacity]"
+                  className="hero-front-char relative inline-block will-change-transform"
                 >
                   <span className="hero-front-normal inline-block text-metallic-red-front">
                     {char}
                   </span>
                   <span
-                    className="hero-front-char-metallic absolute inset-0 inline-block text-metallic-front-chrome pointer-events-none select-none will-change-[opacity,filter]"
+                    className="hero-front-char-metallic absolute inset-0 inline-block text-metallic-front-chrome pointer-events-none select-none will-change-opacity"
                     aria-hidden="true"
                   >
                     {char}
@@ -587,7 +559,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* 7. ENLACES EDITORIALES EN LAS 4 ESQUINAS (z-40) - Fijos a los bordes de la pantalla */}
+      {/* 7. ENLACES EDITORIALES EN LAS 4 ESQUINAS (z-40) */}
       {/* Esquina Superior Izquierda: Identidad */}
       <div className="hero-corner absolute top-8 left-8 md:top-10 md:left-12 z-40">
         <a
@@ -605,7 +577,7 @@ export default function Hero() {
       <div className="hero-corner absolute top-8 right-8 md:top-10 md:right-12 z-40">
         <a
           href="#sobre-mi"
-          className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-800 hover:text-red-600 transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-black/5"
+          className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-800 hover:text-red-600 transition-colors duration-200 px-3 py-1.5 rounded-full hover:bg-black/5"
         >
           <span className="text-stone-400 group-hover:text-red-500 font-mono text-[11px]">[ 01 ]</span>
           <span>INFO</span>
@@ -617,7 +589,7 @@ export default function Hero() {
       <div className="hero-corner absolute bottom-8 left-8 md:bottom-10 md:left-12 z-40">
         <a
           href="#proyectos"
-          className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-200 hover:text-red-400 transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-white/10"
+          className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-200 hover:text-red-400 transition-colors duration-200 px-3 py-1.5 rounded-full hover:bg-white/10"
         >
           <span className="text-stone-400 group-hover:text-red-400 font-mono text-[11px]">[ 02 ]</span>
           <span>PROYECTOS</span>
@@ -629,7 +601,7 @@ export default function Hero() {
       <div className="hero-corner absolute bottom-8 right-8 md:bottom-10 md:right-12 z-40">
         <a
           href="#contacto"
-          className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-200 hover:text-red-400 transition-all duration-200 px-3 py-1.5 rounded-full hover:bg-white/10"
+          className="group flex items-center gap-1.5 font-sans text-xs md:text-sm font-bold tracking-widest uppercase text-stone-200 hover:text-red-400 transition-colors duration-200 px-3 py-1.5 rounded-full hover:bg-white/10"
         >
           <span className="text-stone-400 group-hover:text-red-400 font-mono text-[11px]">[ 03 ]</span>
           <span>CONTACTO</span>

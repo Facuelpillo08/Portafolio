@@ -65,9 +65,14 @@ export default function Skills() {
       className="relative bg-[#0c0c10] text-stone-100 pt-12 pb-10 md:pt-16 md:pb-14 px-6 md:px-12 overflow-hidden"
     >
       {/* Luz ambiental sutil */}
-      <div className="absolute top-1/3 -left-20 w-[600px] h-[400px] bg-red-600/[0.035] rounded-full blur-[170px] pointer-events-none" />
+      <div
+        className="absolute top-1/3 -left-20 w-[600px] h-[400px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(239, 68, 68, 0.04) 0%, transparent 70%)'
+        }}
+      />
 
-      <div className="skills-content-inner max-w-7xl mx-auto relative z-10 will-change-[transform,opacity,filter]">
+      <div className="skills-content-inner max-w-7xl mx-auto relative z-10 will-change-[transform,opacity]">
         {/* ENCABEZADO EDITORIAL - SIN LÍNEAS NI BORDES */}
         <header className="skills-header mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div>

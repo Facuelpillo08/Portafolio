@@ -27,8 +27,8 @@ export default function FeaturedProjects({ containerRef }) {
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
-          stagger: 0.1,
+          duration: 0.6,
+          stagger: 0.08,
           ease: 'power2.out',
           clearProps: 'all',
           scrollTrigger: {
@@ -40,15 +40,15 @@ export default function FeaturedProjects({ containerRef }) {
 
       // 2. Estado inicial de las tarjetas:
       // Card 0 visible y en reposo (yPercent: 0, scale: 1).
-      // Card 1 y 2 preparadas completamente abajo fuera del viewport (yPercent: 160)
+      // Card 1 y 2 preparadas completamente abajo fuera del viewport (yPercent: 150)
       cards.forEach((card, i) => {
         gsap.set(card, {
-          yPercent: i === 0 ? 0 : 160,
+          yPercent: i === 0 ? 0 : 150,
           y: 0,
           scale: 1,
           opacity: 1,
-          filter: 'none',
           transformOrigin: '50% 0%',
+          force3D: true,
         });
       });
 
@@ -61,12 +61,12 @@ export default function FeaturedProjects({ containerRef }) {
             y: 0,
             scale: 1.0,
             opacity: 1.0,
-            ease: 'power2.out',
+            ease: 'none',
             scrollTrigger: {
               trigger: sectionRef.current,
               start: 'top bottom',
               end: 'top top',
-              scrub: true,
+              scrub: 0.2,
               invalidateOnRefresh: true,
             }
           }
@@ -78,7 +78,7 @@ export default function FeaturedProjects({ containerRef }) {
         trigger: sectionRef.current,
         start: 'top 8%',
         end: 'top top',
-        scrub: 0.5,
+        scrub: 0.2,
         animation: gsap.to(sectionRef.current, {
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0,
@@ -86,15 +86,16 @@ export default function FeaturedProjects({ containerRef }) {
         }),
       });
 
-      // 4. Timeline de Pinning Cinemático con ScrollTrigger
+      // 4. Timeline de Pinning Cinemático ultra fluido con ScrollTrigger
+      // scrub: 0.2 sincroniza al milisegundo con la inercia de Lenis sin delay pesado
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: () => `+=${window.innerHeight * (cards.length * 1.25 + 0.4)}`,
+          end: () => `+=${window.innerHeight * (cards.length * 1.15 + 0.3)}`,
           pin: true,
           pinSpacing: true,
-          scrub: 0.85,
+          scrub: 0.2,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         }
@@ -104,14 +105,14 @@ export default function FeaturedProjects({ containerRef }) {
 
       cards.forEach((card, i) => {
         if (i === 0) {
-          // Pausa inicial para contemplar el Proyecto 1 (HEXA) con total nitidez y brillo
-          tl.to({}, { duration: 0.85 });
+          // Pausa inicial para contemplar el Proyecto 1 (HEXA)
+          tl.to({}, { duration: 0.75 });
           return;
         }
 
         const label = `step-${i}`;
 
-        // A) Las tarjetas anteriores se desplazan hacia arriba en cascada 3D visible, segura y armónica
+        // A) Las tarjetas anteriores se desplazan hacia arriba en cascada 3D uniforme
         for (let prev = 0; prev < i; prev++) {
           const depthLevel = i - prev;
           tl.to(
@@ -120,8 +121,9 @@ export default function FeaturedProjects({ containerRef }) {
               scale: 1 - depthLevel * 0.035,
               y: -depthLevel * stepOffset,
               opacity: 1 - depthLevel * 0.07,
-              duration: 1.15,
-              ease: 'power2.inOut',
+              duration: 1.0,
+              ease: 'none',
+              force3D: true,
             },
             label
           );
@@ -135,18 +137,19 @@ export default function FeaturedProjects({ containerRef }) {
             y: 0,
             scale: 1,
             opacity: 1,
-            duration: 1.15,
-            ease: 'power2.inOut',
+            duration: 1.0,
+            ease: 'none',
+            force3D: true,
           },
           label
         );
 
-        // C) Pausa para contemplar el proyecto actual (pausa generosa en el último proyecto)
-        tl.to({}, { duration: i === cards.length - 1 ? 1.6 : 0.85 });
+        // C) Pausa para contemplar el proyecto actual
+        tl.to({}, { duration: i === cards.length - 1 ? 1.4 : 0.75 });
       });
 
       // D) Pausa final con las tarjetas apiladas en reposo
-      tl.to({}, { duration: 0.8 });
+      tl.to({}, { duration: 0.6 });
 
     }, sectionRef);
 
@@ -167,22 +170,22 @@ export default function FeaturedProjects({ containerRef }) {
       aria-labelledby="projects-title"
       className="curtain-slab-panel relative z-30 w-full h-screen min-h-screen rounded-t-[40px] md:rounded-t-[56px] bg-[#f8f9fb] curtain-slab-light text-stone-900 overflow-hidden flex flex-col justify-between py-5 sm:py-6"
     >
-      {/* FONDO DE ESTUDIO BLANCO COMO EN EL HERO + VELO DE VIDRIO ESMERILADO */}
+      {/* FONDO DE ESTUDIO LUMINOSO OPTIMIZADO (0 COSTO DE BACKDROP-FILTER) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Imagen fotográfica de estudio del Hero */}
+        {/* Imagen fotográfica de estudio con opacidad moderada y blur de raster único */}
         <img
           src={studioBg}
           alt=""
           aria-hidden="true"
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover object-center opacity-65"
+          className="w-full h-full object-cover object-center opacity-30 blur-[1px]"
         />
 
-        {/* Capa difusora de vidrio esmerilado arquitectónico */}
-        <div className="absolute inset-0 bg-white/75 backdrop-blur-3xl" />
+        {/* Capa difusora de estudio blanca sólida y pura */}
+        <div className="absolute inset-0 bg-[#f8f9fb]/90" />
 
-        {/* Reflejos cáusticos y refracción sutil de luz */}
+        {/* Reflejos cáusticos y luz ambiental */}
         <div
           className="absolute inset-0 opacity-40 mix-blend-soft-light"
           style={{
@@ -191,14 +194,24 @@ export default function FeaturedProjects({ containerRef }) {
           }}
         />
 
-        {/* Luces volumétricas sutiles de estudio */}
-        <div className="absolute top-1/4 left-1/4 w-[750px] h-[400px] bg-red-600/[0.035] rounded-full blur-[170px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[350px] bg-rose-500/[0.03] rounded-full blur-[150px]" />
+        {/* Luces volumétricas GPU 100% vectoriales con radial-gradient (0 filtros) */}
+        <div
+          className="absolute top-1/4 left-1/4 w-[750px] h-[400px] rounded-full pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(239, 68, 68, 0.05) 0%, transparent 70%)'
+          }}
+        />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-[600px] h-[350px] rounded-full pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(244, 63, 94, 0.04) 0%, transparent 70%)'
+          }}
+        />
       </div>
 
       {/* ENCABEZADO EDITORIAL COMPACTO */}
       <header className="projects-header relative z-30 flex-shrink-0 pt-2 sm:pt-4 pb-1 text-center px-6">
-        <div className="projects-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 border border-stone-200/90 shadow-xs text-red-600 font-mono text-[11px] uppercase tracking-widest backdrop-blur-md mb-2">
+        <div className="projects-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-stone-200/90 shadow-xs text-red-600 font-mono text-[11px] uppercase tracking-widest mb-2">
           <span className="w-2 h-2 rounded-full bg-red-600 inline-block shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse" />
           <span>[ 02 // PROYECTOS SELECCIONADOS ]</span>
         </div>
@@ -225,13 +238,13 @@ export default function FeaturedProjects({ containerRef }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Abrir proyecto ${project.title} en vivo`}
-                className="project-sculptural-card absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl bg-[#18181b] border-t border-white/30 border-x border-b border-stone-800/80 shadow-[0_-10px_32px_rgba(0,0,0,0.35),0_30px_90px_rgba(0,0,0,0.35)] hover:shadow-[0_0_50px_rgba(239,68,68,0.3)] overflow-hidden cursor-pointer group flex flex-col will-change-transform transition-shadow duration-300"
+                className="project-sculptural-card absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl bg-[#18181b] border-t border-white/20 border-x border-b border-stone-800/80 shadow-[0_-10px_32px_rgba(0,0,0,0.35),0_30px_90px_rgba(0,0,0,0.35)] hover:shadow-[0_0_50px_rgba(239,68,68,0.3)] overflow-hidden cursor-pointer group flex flex-col will-change-transform transition-shadow duration-300"
                 style={{
                   zIndex: (index + 1) * 10,
                 }}
               >
-                {/* 1. Barra superior escultural limpia (sin semáforos, sin botones en la derecha) */}
-                <div className="flex items-center justify-between px-5 sm:px-7 py-3 sm:py-3.5 bg-[#18181b] border-b border-white/10 backdrop-blur-md select-none flex-shrink-0">
+                {/* 1. Barra superior escultural limpia (sin filtros costosos) */}
+                <div className="flex items-center justify-between px-5 sm:px-7 py-3 sm:py-3.5 bg-[#18181b] border-b border-white/10 select-none flex-shrink-0">
                   {/* Número de proyecto */}
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs font-bold text-red-500 tracking-wider">
@@ -249,7 +262,7 @@ export default function FeaturedProjects({ containerRef }) {
                     </span>
                   </div>
 
-                  {/* Indicador sutil de año (sin botones) */}
+                  {/* Indicador sutil de año */}
                   <div className="flex items-center">
                     <span className="font-mono text-xs text-stone-400 font-medium">
                       {project.year}
@@ -257,14 +270,14 @@ export default function FeaturedProjects({ containerRef }) {
                   </div>
                 </div>
 
-                {/* 2. Cuerpo de la ventana: Captura al 100% de brillo nativo (sin botones abajo a la derecha) */}
+                {/* 2. Cuerpo de la ventana: GPU composite directo sin repaint de filtros */}
                 <div className="relative flex-1 w-full h-full bg-stone-900 overflow-hidden">
                   <img
                     src={project.image}
                     alt={`Captura del proyecto ${project.title}`}
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover object-top filter brightness-100 group-hover:brightness-105 group-hover:scale-[1.015] transition-all duration-500 ease-out"
+                    className="w-full h-full object-cover object-top group-hover:scale-[1.015] transition-transform duration-500 ease-out"
                   />
 
                   {/* Reflejo especular diagonal sutil de cristal */}

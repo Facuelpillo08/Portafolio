@@ -52,7 +52,7 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
         // CASO 2: MANIFIESTO -> PROYECTOS (ASCENSO DE LÁMINA ESCULTURAL SOBRE MANIFIESTO)
         // =========================================================================
         if (isAboutToProjects) {
-          outgoing.style.willChange = 'transform, filter';
+          outgoing.style.willChange = 'transform, opacity';
 
           // El Manifiesto se ancla al llegar al final (bottom bottom), y permanece fijo
           // mientras la lámina blanca de Proyectos asciende montándose por encima como un telón escultural.
@@ -63,20 +63,20 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
               end: () => '+=' + window.innerHeight,
               pin: true,
               pinSpacing: false,
-              scrub: 0.8,
+              scrub: 0.25,
               invalidateOnRefresh: true,
             }
           });
 
           // A medida que la lámina blanca de Proyectos sube por encima, el Manifiesto
-          // retrocede en profundidad 3D, se desenfoca ópticamente y se disuelve
+          // retrocede en profundidad 3D y se disuelve (100% composite-only para 120 FPS fluidos)
           tl.to(
             '.about-content-inner',
             {
-              scale: 0.94,
-              filter: 'blur(8px)',
+              scale: 0.95,
               opacity: 0.2,
-              ease: 'power1.inOut',
+              ease: 'none',
+              force3D: true,
             },
             0
           );
@@ -90,8 +90,8 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
                                   (incoming.querySelector('#contacto') !== null || incoming.id === 'contacto');
 
         if (isSkillsToContact) {
-          // El final de Habilidades permanece fijo en reposo mientras la lámina blanca de Contacto
-          // asciende con su curvatura escultural y sombra profunda montándose limpiamente por encima.
+          outgoing.style.willChange = 'transform, opacity';
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: outgoing,
@@ -100,20 +100,19 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
               end: 'top top',
               pin: true,
               pinSpacing: false,
-              scrub: 0.8,
+              scrub: 0.25,
               anticipatePin: 1,
               invalidateOnRefresh: true,
             }
           });
 
-          // Solo un sutil desenfoque y desvanecido conforme Contacto lo va cubriendo.
-          // NUNCA oscurecimiento con brightness ni escala que levante el fondo o cree vacíos negros.
+          // Desvanecido suave sin repaints de blur
           tl.to(
             '.skills-content-inner',
             {
-              filter: 'blur(6px)',
               opacity: 0.45,
-              ease: 'power1.inOut',
+              ease: 'none',
+              force3D: true,
             },
             0
           );

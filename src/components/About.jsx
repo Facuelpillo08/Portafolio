@@ -93,9 +93,14 @@ export default function About() {
       className="relative bg-[#0c0c10] text-stone-100 py-20 md:py-32 overflow-hidden"
     >
       {/* Luz ambiental sutil y envolvente */}
-      <div className="absolute top-1/4 -left-20 w-[550px] h-[550px] bg-red-600/[0.04] rounded-full blur-[160px] pointer-events-none" />
+      <div
+        className="absolute top-1/4 -left-20 w-[550px] h-[550px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(239, 68, 68, 0.05) 0%, transparent 70%)'
+        }}
+      />
 
-      <div className="about-content-inner max-w-7xl mx-auto px-6 md:px-12 relative z-10 will-change-[transform,opacity,filter]">
+      <div className="about-content-inner max-w-7xl mx-auto px-6 md:px-12 relative z-10 will-change-[transform,opacity]">
         {/* ENCABEZADO EDITORIAL DE SECCIÓN */}
         <header ref={headerRef} className="about-header mb-12 md:mb-16">
           <div className="flex items-center gap-2.5 text-red-500 font-mono text-xs uppercase tracking-widest mb-4">
@@ -137,7 +142,7 @@ export default function About() {
             <aside
               ref={cardRef}
               aria-label="Perfil profesional y enfoque de trabajo"
-              className="about-card rounded-3xl bg-stone-900/60 border border-white/10 p-6 sm:p-8 backdrop-blur-2xl shadow-2xl relative overflow-hidden group hover:border-red-500/40 transition-all duration-500"
+              className="about-card rounded-3xl bg-stone-900/80 border border-white/10 p-6 sm:p-8 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-red-500/40 transition-colors duration-300"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 rounded-full blur-2xl pointer-events-none" />
 
