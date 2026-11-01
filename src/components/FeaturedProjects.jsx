@@ -74,20 +74,23 @@ export default function FeaturedProjects({ containerRef }) {
       }
 
       // 3. Suavizar esquinas superiores a 0px al clavarse (pin) en el tope de pantalla
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: 'top 8%',
-        end: 'top top',
-        scrub: 0.2,
-        animation: gsap.to(sectionRef.current, {
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
-          ease: 'none',
-        }),
+      // scrub: true elimina cualquier retraso de inercia y start: 'top 20%' ofrece una transición progresiva y limpia
+      gsap.to(sectionRef.current, {
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 20%',
+          end: 'top top',
+          scrub: true,
+          invalidateOnRefresh: true,
+        }
       });
 
       // 4. Timeline de Pinning Cinemático ultra fluido con ScrollTrigger
       // scrub: 0.2 sincroniza al milisegundo con la inercia de Lenis sin delay pesado
+      // Se elimina anticipatePin para evitar rebotes o saltos hacia atrás antes de anclar la sección
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -96,7 +99,6 @@ export default function FeaturedProjects({ containerRef }) {
           pin: true,
           pinSpacing: true,
           scrub: 0.2,
-          anticipatePin: 1,
           invalidateOnRefresh: true,
         }
       });

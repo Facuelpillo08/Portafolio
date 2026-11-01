@@ -84,7 +84,7 @@ export default function Navbar() {
     }
 
     if (window.history.pushState) {
-      window.history.pushState(null, '', `#${id}`);
+      window.history.pushState(null, '', `#/${id}`);
     }
 
     unlockTimer.current = setTimeout(() => {
@@ -104,7 +104,7 @@ export default function Navbar() {
 
       const href = anchor.getAttribute('href');
       if (!href || href === '#') return;
-      const targetId = href.replace('#', '');
+      const targetId = href.replace(/^#[/]?/, '');
       if (SECTIONS.includes(targetId)) {
         e.preventDefault();
         scrollToSection(targetId);
@@ -115,7 +115,7 @@ export default function Navbar() {
 
     // 2. Si la página se carga con un hash específico en la URL, desplazar suavemente tras la inicialización
     if (window.location.hash) {
-      const initialHash = window.location.hash.replace('#', '');
+      const initialHash = window.location.hash.replace(/^#[/]?/, '');
       if (SECTIONS.includes(initialHash) && initialHash !== 'inicio') {
         initialScrollTimer.current = setTimeout(() => {
           scrollToSection(initialHash);
@@ -180,7 +180,7 @@ export default function Navbar() {
     };
 
     const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
+      const hash = window.location.hash.replace(/^#[/]?/, '');
       if (SECTIONS.includes(hash)) {
         scrollToSection(hash);
       }

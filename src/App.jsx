@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useParams } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -114,12 +114,23 @@ function PortfolioPage() {
   );
 }
 
+const VALID_SECTIONS = ['inicio', 'sobre-mi', 'proyectos', 'habilidades', 'contacto'];
+
+function SectionRouteHandler() {
+  const { section } = useParams();
+  if (VALID_SECTIONS.includes(section)) {
+    return <PortfolioPage />;
+  }
+  return <NotFound />;
+}
+
 export default function App() {
   return (
     <HashRouter>
       <SmoothScrollProvider>
         <Routes>
           <Route path="/" element={<PortfolioPage />} />
+          <Route path="/:section" element={<SectionRouteHandler />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </SmoothScrollProvider>

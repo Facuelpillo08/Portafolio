@@ -108,7 +108,6 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
               pin: true,
               pinSpacing: false,
               scrub: 0.25,
-              anticipatePin: 1,
               invalidateOnRefresh: true,
             }
           });
