@@ -14,13 +14,6 @@ export default function Skills() {
 
   const sectionRef = useScrollReveal([
     {
-      trigger: '.skills-header',
-      selector: '.skills-header > *',
-      duration: 0.85,
-      stagger: 0.12,
-      y: 35
-    },
-    {
       trigger: '.skills-tabs',
       selector: '.skills-tabs',
       duration: 0.8,

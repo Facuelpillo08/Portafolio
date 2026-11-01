@@ -28,6 +28,8 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
         const incoming = inRef?.current;
         if (!outgoing || !incoming) return;
 
+        outgoing.style.willChange = 'transform, opacity';
+
         const isHeroToAbout = outgoing.querySelector('#inicio') !== null || outgoing.id === 'inicio';
         const isAboutToProjects = (outgoing.querySelector('#sobre-mi') !== null || outgoing.id === 'sobre-mi') &&
                                   (incoming.querySelector('#proyectos') !== null || incoming.id === 'proyectos');
@@ -85,25 +87,9 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
         // CASO 3: PROYECTOS -> HABILIDADES (LÁMINA OSCURA ESCULPIDA SOBRE PROYECTOS)
         // =========================================================================
         if (isProjectsToSkills) {
-          outgoing.style.willChange = 'transform, opacity';
-
-          // Cuando Habilidades (incoming) entra desde el fondo, Proyectos (outgoing)
-          // se fija en el viewport mientras la lámina oscura de Habilidades se monta encima
-          ScrollTrigger.create({
-            trigger: incoming,
-            start: 'top bottom',
-            end: 'top top',
-            pin: outgoing,
-            pinSpacing: false,
-            scrub: 0.2,
-            invalidateOnRefresh: true,
-            animation: gsap.to(outgoing, {
-              scale: 0.95,
-              opacity: 0.25,
-              ease: 'none',
-              force3D: true,
-            }),
-          });
+          // La transición de Proyectos a Habilidades se gestiona de forma nativa e integrada
+          // en FeaturedProjects (pinning de 4.3H con 1.0H final de telón) y el -mt-[100vh] de Habilidades en App.jsx.
+          // Omitir cualquier ScrollTrigger duplicado para evitar colisiones de pin-spacer.
           return;
         }
 

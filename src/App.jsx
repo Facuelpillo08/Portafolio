@@ -85,7 +85,7 @@ function PortfolioPage() {
         {/* PANEL 3: HABILIDADES & STACK (Z-40) - LÁMINA OSCURA ESCULPIDA */}
         <section
           ref={skillsPanelRef}
-          className="curtain-slab-panel relative z-40 w-full rounded-t-[32px] sm:rounded-t-[40px] md:rounded-t-[48px] bg-[#0c0c10] curtain-slab-dark"
+          className="curtain-slab-panel relative z-40 w-full rounded-t-[32px] sm:rounded-t-[40px] md:rounded-t-[48px] bg-[#0c0c10] curtain-slab-dark -mt-[100vh]"
         >
           <Skills />
         </section>

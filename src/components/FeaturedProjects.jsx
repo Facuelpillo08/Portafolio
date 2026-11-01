@@ -92,7 +92,7 @@ export default function FeaturedProjects({ containerRef }) {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: () => `+=${window.innerHeight * (cards.length * 0.75)}`,
+          end: () => `+=${window.innerHeight * 4.3}`,
           pin: true,
           pinSpacing: true,
           scrub: 0.2,
@@ -106,7 +106,7 @@ export default function FeaturedProjects({ containerRef }) {
       cards.forEach((card, i) => {
         if (i === 0) {
           // Pausa inicial para contemplar el Proyecto 1 (HEXA)
-          tl.to({}, { duration: 0.45 });
+          tl.to({}, { duration: 0.6 });
           return;
         }
 
@@ -144,9 +144,38 @@ export default function FeaturedProjects({ containerRef }) {
           label
         );
 
-        // C) Pausa para contemplar el proyecto actual (pausa precisa y cómoda, sin scroll muerto al final)
-        tl.to({}, { duration: 0.45 });
+        // C) Pausa para contemplar el proyecto actual
+        // Para KNTX (i=1): 0.5s. Para VANDAL (i=2, último): 0.6s de contemplación pura y nítida
+        const pauseDuration = i === cards.length - 1 ? 0.6 : 0.5;
+        tl.to({}, { duration: pauseDuration });
       });
+
+      // D) Transición de salida hacia Habilidades (exactamente 1.0s / 1.0H de scroll)
+      // Mientras la lámina oscura de Habilidades asciende en scroll nativo desde abajo (gracias a -mt-[100vh]),
+      // el mazo de tarjetas se repliega sutilmente en 3D y el encabezado se atenúa.
+      const exitLabel = 'exit-to-skills';
+      tl.to(
+        '.projects-cards-stack',
+        {
+          scale: 0.95,
+          opacity: 0.4,
+          duration: 1.0,
+          ease: 'none',
+          force3D: true,
+        },
+        exitLabel
+      );
+
+      tl.to(
+        '.projects-header-item',
+        {
+          opacity: 0.25,
+          y: -20,
+          duration: 1.0,
+          ease: 'none',
+        },
+        exitLabel
+      );
 
     }, sectionRef);
 
@@ -225,7 +254,7 @@ export default function FeaturedProjects({ containerRef }) {
 
       {/* MAZO DE VENTANAS ESCULTURALES 3D SUPERPUESTAS */}
       <div className="relative z-20 w-full max-w-5xl xl:max-w-6xl mx-auto flex-1 h-[60vh] sm:h-[64vh] md:h-[68vh] max-h-[640px] px-4 sm:px-6 flex items-center justify-center my-auto">
-        <div className="relative w-full h-full">
+        <div className="projects-cards-stack relative w-full h-full">
           {projects.map((project, index) => {
             return (
               <a
