@@ -164,14 +164,34 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  // 2. Escuchar scroll pasivo para alimentar el parallax multi-capa continuo
+  // 2. Escuchar scroll pasivo y tracking continuo del cursor (0 Reflows)
   useEffect(() => {
     const handleScroll = () => {
       scrollYRef.current = window.scrollY;
     };
 
+    const handlePointerMove = (e) => {
+      // Si el usuario ya scrolleó fuera del Hero, omitir cálculo del cursor
+      if (scrollYRef.current > window.innerHeight) return;
+      targetMouse.current = {
+        x: (e.clientX / window.innerWidth - 0.5) * 2,
+        y: (e.clientY / window.innerHeight - 0.5) * 2
+      };
+    };
+
+    const handleMouseLeave = () => {
+      targetMouse.current = { x: 0, y: 0 };
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
   }, []);
 
   // 3. FÍSICA Y PARALLAX MULTI-CAPA CONTINUO (0 Re-renders de React, 120 FPS Nativos)
@@ -186,6 +206,14 @@ export default function Hero() {
     const isMobile = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
 
     const updatePhysics = () => {
+      const scrollY = scrollYRef.current;
+
+      // Si el usuario scrolleó más allá del Hero, pausar escrituras al DOM para ahorrar 100% GPU
+      if (scrollY > window.innerHeight * 1.05) {
+        animId = window.requestAnimationFrame(updatePhysics);
+        return;
+      }
+
       // En móviles sin interacción táctil activa: oscilación pendular natural (~4s por ciclo)
       if (isMobile && !isTouching.current) {
         const time = performance.now() * 0.001;
@@ -194,13 +222,12 @@ export default function Hero() {
         targetMouse.current.y = Math.cos(angle) * 0.25;
       }
 
-      // Interpolación lineal suave (inercia elástica para mouse)
-      currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.06;
-      currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.06;
+      // Interpolación lineal ágil y fluida (0.14 lerp elimina cualquier retraso o sensación de 'trabado')
+      currentMouse.current.x += (targetMouse.current.x - currentMouse.current.x) * 0.14;
+      currentMouse.current.y += (targetMouse.current.y - currentMouse.current.y) * 0.14;
 
       const mx = currentMouse.current.x;
       const my = currentMouse.current.y;
-      const scrollY = scrollYRef.current;
 
       // Omitir escrituras al DOM si el cambio es imperceptible para liberar la GPU
       if (
@@ -212,11 +239,11 @@ export default function Hero() {
         lastMy = my;
         lastScrollY = scrollY;
 
-        // Inclinación y traslación por cursor (física escultórica 3D)
-        const tiltX = -my * 10;
-        const tiltY = mx * 12;
-        const shiftX = mx * 26;
-        const shiftY = my * 18;
+        // Inclinación y traslación equilibrada por cursor (física escultórica 3D de alta gama)
+        const tiltX = -my * 4;
+        const tiltY = mx * 5;
+        const shiftX = mx * 28;
+        const shiftY = my * 20;
 
         // ENFOQUE ÓPTICO UNIFICADO (100% GPU COMPOSITE-ONLY CON OPACITY & TRANSFORMS)
         const heroProgress = Math.min(1, Math.max(0, scrollY / (window.innerHeight * 0.95)));
@@ -278,19 +305,6 @@ export default function Hero() {
     return () => window.cancelAnimationFrame(animId);
   }, []);
 
-  const handleMouseMove = (e) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    targetMouse.current = {
-      x: ((e.clientX - rect.left) / rect.width - 0.5) * 2,
-      y: ((e.clientY - rect.top) / rect.height - 0.5) * 2
-    };
-  };
-
-  const handleMouseLeave = () => {
-    targetMouse.current = { x: 0, y: 0 };
-  };
-
   const handleTouchStart = (e) => {
     isTouching.current = true;
     if (!containerRef.current || !e.touches[0]) return;
@@ -320,8 +334,6 @@ export default function Hero() {
     <section
       id="inicio"
       ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -415,7 +427,7 @@ export default function Hero() {
               {"FACUNDO".split('').map((char, i) => (
                 <span
                   key={`fn-${i}`}
-                  className="hero-char relative inline-block will-change-transform"
+                  className="hero-char relative inline-block"
                 >
                   <span className="hero-char-normal inline-block text-metallic-red-back">
                     {char}
@@ -433,7 +445,7 @@ export default function Hero() {
               {"ACOSTA".split('').map((char, i) => (
                 <span
                   key={`ln-${i}`}
-                  className="hero-char relative inline-block will-change-transform"
+                  className="hero-char relative inline-block"
                 >
                   <span className="hero-char-normal inline-block text-metallic-red-back">
                     {char}
@@ -523,7 +535,7 @@ export default function Hero() {
               {"DESARROLLADOR".split('').map((char, i) => (
                 <span
                   key={`sub1-${i}`}
-                  className="hero-front-char relative inline-block will-change-transform"
+                  className="hero-front-char relative inline-block"
                 >
                   <span className="hero-front-normal inline-block text-metallic-red-front">
                     {char}
@@ -541,7 +553,7 @@ export default function Hero() {
               {"WEB".split('').map((char, i) => (
                 <span
                   key={`sub2-${i}`}
-                  className="hero-front-char relative inline-block will-change-transform"
+                  className="hero-front-char relative inline-block"
                 >
                   <span className="hero-front-normal inline-block text-metallic-red-front">
                     {char}

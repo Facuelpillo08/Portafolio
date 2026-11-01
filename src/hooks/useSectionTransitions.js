@@ -28,15 +28,13 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
         const incoming = inRef?.current;
         if (!outgoing || !incoming) return;
 
-        // Si la sección saliente tiene su propio pinning interno (como FeaturedProjects), omitir
-        const hasInternalPin = outgoing.id === 'proyectos' || outgoing.querySelector('#proyectos') !== null;
-        if (hasInternalPin) return;
-
-        outgoing.style.willChange = 'transform, filter';
-
         const isHeroToAbout = outgoing.querySelector('#inicio') !== null || outgoing.id === 'inicio';
         const isAboutToProjects = (outgoing.querySelector('#sobre-mi') !== null || outgoing.id === 'sobre-mi') &&
                                   (incoming.querySelector('#proyectos') !== null || incoming.id === 'proyectos');
+        const isProjectsToSkills = (outgoing.querySelector('#proyectos') !== null || outgoing.id === 'proyectos') &&
+                                   (incoming.querySelector('#habilidades') !== null || incoming.id === 'habilidades');
+        const isSkillsToContact = (outgoing.querySelector('#habilidades') !== null || outgoing.id === 'habilidades') &&
+                                  (incoming.querySelector('#contacto') !== null || incoming.id === 'contacto');
 
         // =========================================================================
         // CASO 1: HERO -> MANIFIESTO (FLUJO CONTINUO CON ENFOQUE ÓPTICO)
@@ -84,11 +82,34 @@ export function useSectionTransitions(transitionPairs = [], containerRef) {
         }
 
         // =========================================================================
-        // CASO 3: HABILIDADES -> CONTACTO (ASCENSO DE LÁMINA BLANCA SOBRE HABILIDADES)
+        // CASO 3: PROYECTOS -> HABILIDADES (LÁMINA OSCURA ESCULPIDA SOBRE PROYECTOS)
         // =========================================================================
-        const isSkillsToContact = (outgoing.querySelector('#habilidades') !== null || outgoing.id === 'habilidades') &&
-                                  (incoming.querySelector('#contacto') !== null || incoming.id === 'contacto');
+        if (isProjectsToSkills) {
+          outgoing.style.willChange = 'transform, opacity';
 
+          // Cuando Habilidades (incoming) entra desde el fondo, Proyectos (outgoing)
+          // se fija en el viewport mientras la lámina oscura de Habilidades se monta encima
+          ScrollTrigger.create({
+            trigger: incoming,
+            start: 'top bottom',
+            end: 'top top',
+            pin: outgoing,
+            pinSpacing: false,
+            scrub: 0.2,
+            invalidateOnRefresh: true,
+            animation: gsap.to(outgoing, {
+              scale: 0.95,
+              opacity: 0.25,
+              ease: 'none',
+              force3D: true,
+            }),
+          });
+          return;
+        }
+
+        // =========================================================================
+        // CASO 4: HABILIDADES -> CONTACTO (ASCENSO DE LÁMINA BLANCA SOBRE HABILIDADES)
+        // =========================================================================
         if (isSkillsToContact) {
           outgoing.style.willChange = 'transform, opacity';
 

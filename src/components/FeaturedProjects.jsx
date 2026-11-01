@@ -92,7 +92,7 @@ export default function FeaturedProjects({ containerRef }) {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: () => `+=${window.innerHeight * (cards.length * 1.15 + 0.3)}`,
+          end: () => `+=${window.innerHeight * (cards.length * 0.75)}`,
           pin: true,
           pinSpacing: true,
           scrub: 0.2,
@@ -106,7 +106,7 @@ export default function FeaturedProjects({ containerRef }) {
       cards.forEach((card, i) => {
         if (i === 0) {
           // Pausa inicial para contemplar el Proyecto 1 (HEXA)
-          tl.to({}, { duration: 0.75 });
+          tl.to({}, { duration: 0.45 });
           return;
         }
 
@@ -121,7 +121,7 @@ export default function FeaturedProjects({ containerRef }) {
               scale: 1 - depthLevel * 0.035,
               y: -depthLevel * stepOffset,
               opacity: 1 - depthLevel * 0.07,
-              duration: 1.0,
+              duration: 0.8,
               ease: 'none',
               force3D: true,
             },
@@ -137,19 +137,16 @@ export default function FeaturedProjects({ containerRef }) {
             y: 0,
             scale: 1,
             opacity: 1,
-            duration: 1.0,
+            duration: 0.8,
             ease: 'none',
             force3D: true,
           },
           label
         );
 
-        // C) Pausa para contemplar el proyecto actual
-        tl.to({}, { duration: i === cards.length - 1 ? 1.4 : 0.75 });
+        // C) Pausa para contemplar el proyecto actual (pausa precisa y cómoda, sin scroll muerto al final)
+        tl.to({}, { duration: 0.45 });
       });
-
-      // D) Pausa final con las tarjetas apiladas en reposo
-      tl.to({}, { duration: 0.6 });
 
     }, sectionRef);
 
