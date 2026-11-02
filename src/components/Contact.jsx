@@ -471,7 +471,7 @@ export default function Contact() {
             </a>
 
             <a
-              href="/cv-facundo-acosta.pdf"
+              href={`${import.meta.env.BASE_URL}cv-facundo-acosta.pdf`}
               download="CV_Facundo_Acosta.pdf"
               target="_blank"
               rel="noopener noreferrer"
