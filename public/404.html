@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 // Hola perdida | Facundo Acosta</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0c0c10" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0c0c10;
+        color: #f5f5f4;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+      .loader {
+        text-align: center;
+        padding: 2rem;
+      }
+      .code {
+        font-size: 5rem;
+        font-weight: 900;
+        margin: 0;
+        background: linear-gradient(180deg, #ffffff 0%, #d4d4d8 35%, #71717a 70%, #27272a 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.05em;
+      }
+      .desc {
+        color: #a8a29e;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+        font-family: monospace;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+    </style>
+    <script>
+      (function () {
+        var path = window.location.pathname;
+        var search = window.location.search || '';
+        var hash = window.location.hash || '';
+
+        // Limpiar barras iniciales y finales
+        var cleanPath = path.replace(/^\/+/, '').replace(/\/+$/, '');
+
+        // Redirigir hacia HashRouter para que React cargue la aplicación y muestre tu página 404
+        if (cleanPath && cleanPath !== '404.html' && cleanPath !== '404') {
+          window.location.replace('/#/' + cleanPath + search + hash);
+        } else {
+          window.location.replace('/#/404' + search + hash);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="loader">
+      <div class="code">404</div>
+      <div class="desc">Coordenada no registrada // Conectando...</div>
+    </div>
+  </body>
+</html>
