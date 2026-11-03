@@ -238,24 +238,24 @@ export default function FeaturedProjects({ containerRef }) {
       </div>
 
       {/* ENCABEZADO EDITORIAL COMPACTO */}
-      <header className="projects-header relative z-30 flex-shrink-0 pt-2 sm:pt-4 pb-1 text-center px-6">
-        <div className="projects-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-stone-200/90 shadow-xs text-red-600 font-mono text-[11px] uppercase tracking-widest mb-2">
+      <header className="projects-header relative z-30 flex-shrink-0 pt-1 sm:pt-3 pb-1 text-center px-4">
+        <div className="projects-header-item inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 border border-stone-200/90 shadow-xs text-red-600 font-mono text-[11px] uppercase tracking-widest mb-1.5">
           <span className="w-2 h-2 rounded-full bg-red-600 inline-block shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse" />
           <span>[ 02 // PROYECTOS SELECCIONADOS ]</span>
         </div>
         <h2
           id="projects-title"
-          className="projects-header-item text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-stone-950 uppercase leading-none"
+          className="projects-header-item text-3xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-stone-950 uppercase leading-none mb-1"
         >
           PROYECTOS<span className="text-red-600">.</span>
         </h2>
-        <p className="projects-header-item text-stone-500 font-mono text-xs uppercase tracking-wider mt-1.5 font-medium">
-          Haz clic sobre cualquier proyecto para abrir la demo en vivo
+        <p className="projects-header-item text-stone-500 font-mono text-[11px] sm:text-xs uppercase tracking-wider mt-1 font-medium">
+          Clic para ver la demo en vivo
         </p>
       </header>
 
       {/* MAZO DE VENTANAS ESCULTURALES 3D SUPERPUESTAS */}
-      <div className="relative z-20 w-full max-w-5xl xl:max-w-6xl mx-auto flex-1 h-[60vh] sm:h-[64vh] md:h-[68vh] max-h-[640px] px-4 sm:px-6 flex items-center justify-center my-auto">
+      <div className="relative z-20 w-full max-w-5xl xl:max-w-6xl mx-auto flex-1 h-[56vh] sm:h-[60vh] md:h-[64vh] max-h-[580px] px-4 sm:px-6 flex items-center justify-center my-auto pt-2">
         <div className="projects-cards-stack relative w-full h-full">
           {projects.map((project, index) => {
             return (
