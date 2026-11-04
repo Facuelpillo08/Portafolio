@@ -1,0 +1,17 @@
+{
+  "name": "Facundo Acosta | Desarrollador Web en La Plata y Berisso",
+  "short_name": "Facundo Acosta",
+  "description": "Desarrollo y diseño de páginas web profesionales, tiendas e-commerce y aplicaciones en Berisso, La Plata y Buenos Aires.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0c10",
+  "theme_color": "#0c0c10",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
