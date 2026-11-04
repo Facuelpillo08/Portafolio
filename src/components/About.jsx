@@ -125,7 +125,7 @@ export default function About() {
           {/* Columna Izquierda: Narrativa y Manifiesto (7 cols) */}
           <div ref={textColRef} className="about-text-col lg:col-span-7 space-y-7">
             <p className="text-stone-200 text-lg sm:text-xl font-normal leading-relaxed">
-              Desarrollo sitios y aplicaciones web que combinan una estética visual moderna con un funcionamiento rápido y sin fallas. Para quien visita la web, la experiencia es atractiva, intuitiva y fluida; para tu proyecto o negocio, se traduce en profesionalismo, confianza y mejores resultados.
+              Desarrollo páginas web profesionales, tiendas e-commerce y aplicaciones a medida para negocios, empresas y emprendimientos en Berisso, La Plata, Buenos Aires y de forma remota. Para quien visita la web, la experiencia es atractiva, intuitiva y ultra rápida; para tu negocio o marca, se traduce en visibilidad orgánica en Google, confianza comercial y clientes potenciales.
             </p>
 
             <p className="text-stone-300 text-base sm:text-lg leading-relaxed">
@@ -169,15 +169,15 @@ export default function About() {
                 </div>
 
                 <div>
-                  <dt className="text-stone-500 uppercase tracking-widest text-[10px]">Ubicación</dt>
-                  <dd className="text-stone-200 mt-0.5">Buenos Aires, Argentina (Trabajo Remoto Global)</dd>
+                  <dt className="text-stone-500 uppercase tracking-widest text-[10px]">Ubicación y Cobertura</dt>
+                  <dd className="text-stone-200 mt-0.5">Berisso &middot; La Plata &middot; Buenos Aires (Servicio local y remoto para toda Argentina)</dd>
                 </div>
 
                 <div>
                   <dt className="text-stone-500 uppercase tracking-widest text-[10px]">Especialidad</dt>
                   <dd className="text-stone-200 mt-0.5 flex items-center gap-2">
                     <Layers className="w-3.5 h-3.5 text-red-400" />
-                    <span>Desarrollo Web Fullstack & Experiencias Interactivas</span>
+                    <span>Creación de Páginas Web, E-Commerce &amp; Desarrollo a Medida</span>
                   </dd>
                 </div>
 

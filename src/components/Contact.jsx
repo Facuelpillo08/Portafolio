@@ -199,7 +199,7 @@ export default function Contact() {
           </h2>
 
           <p className="text-stone-600 font-mono text-xs md:text-sm mt-4 uppercase tracking-wider max-w-xl font-medium">
-            DISPONIBLE PARA PROYECTOS FREELANCE SELECCIONADOS, ROLES FRONTEND Y COLABORACIONES CREATIVAS.
+            DISPONIBLE PARA CREACIÓN DE PÁGINAS WEB, TIENDAS E-COMMERCE Y PROYECTOS A MEDIDA.
           </p>
         </header>
 
@@ -375,7 +375,7 @@ export default function Contact() {
                     id="contact-msg"
                     required
                     rows={4}
-                    placeholder="Contame brevemente sobre tu proyecto, objetivos o la vacante a cubrir..."
+                    placeholder="Contame sobre tu negocio, qué tipo de página web o tienda online necesitás..."
                     value={formData.message}
                     disabled={isSubmitting}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -529,7 +529,7 @@ export default function Contact() {
             &copy; {CURRENT_YEAR} Facundo Acosta
           </p>
           <div className="flex items-center gap-4 text-stone-400">
-            <span>Buenos Aires, Argentina</span>
+            <span>Berisso &middot; La Plata &middot; Buenos Aires</span>
             <span>·</span>
             <span className="text-stone-600 font-semibold uppercase tracking-wider text-[11px]">
               Portfolio 2026

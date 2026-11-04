@@ -302,7 +302,7 @@ export default function FeaturedProjects({ containerRef }) {
                 <div className="relative flex-1 w-full h-full bg-stone-900 overflow-hidden">
                   <img
                     src={project.image}
-                    alt={`Captura del proyecto ${project.title}`}
+                    alt={`Desarrollo web ${project.title} - ${project.category}`}
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover object-top group-hover:scale-[1.015] transition-transform duration-500 ease-out"
